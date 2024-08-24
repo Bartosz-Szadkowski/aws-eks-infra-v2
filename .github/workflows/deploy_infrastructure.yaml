@@ -24,3 +24,14 @@ jobs:
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
           aws-region: ${{ vars.AWS_REGION }}
       
+      - name: Terragrunt Init
+        run: |
+          cd infrastructure/dev/vpc
+          terragrunt init
+
+      - name: Terragrunt Plan
+        run: |
+          cd infrastructure/dev/vpc
+          terragrunt plan
+      
+      
