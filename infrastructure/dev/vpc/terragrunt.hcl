@@ -4,7 +4,7 @@ include "root" {
 
 terraform {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "5.13.0"
+  // version = "5.13.0"
 }
 
 inputs = {
