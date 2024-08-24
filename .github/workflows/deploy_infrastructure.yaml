@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   terragrunt_plan:
-    name: Terragrunt Plan
+    name: Deploy Infrastructure
     runs-on: ubuntu-latest
     steps:
       - name: Clone repo
@@ -39,5 +39,10 @@ jobs:
         run: |
           cd infrastructure/dev/vpc
           terragrunt plan
+        
+      - name: Terragrunt Apply
+        run: |
+          cd infrastructure/dev/vpc
+          terragrunt apply -auto-approve
       
       
