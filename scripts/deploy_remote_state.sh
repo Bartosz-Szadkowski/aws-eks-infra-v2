@@ -3,8 +3,8 @@
 set -e
 
 # Variables
-S3_BUCKET="my-terraform-esta-state"
-DYNAMODB_TABLE="my-lock-esta-table"
+S3_BUCKET="my-terraform-esta-state-v1"
+DYNAMODB_TABLE="my-lock-esta-table-v1"
 REGION="us-east-1"
 
 # Check if S3 bucket exists
@@ -18,10 +18,44 @@ else
     else
         aws s3api create-bucket --bucket "$S3_BUCKET" --region "$REGION" --create-bucket-configuration LocationConstraint="$REGION"
     fi
-    
-    echo "Enabling versioning on S3 bucket $S3_BUCKET..."
-    aws s3api put-bucket-versioning --bucket "$S3_BUCKET" --versioning-configuration Status=Enabled
 fi
+
+echo "Updating S3 bucket $S3_BUCKET with best practices..."
+
+# Enable Server-Side Encryption by Default
+aws s3api put-bucket-encryption --bucket "$S3_BUCKET" --server-side-encryption-configuration '{
+    "Rules": [{
+        "ApplyServerSideEncryptionByDefault": {
+            "SSEAlgorithm": "AES256"
+        }
+    }]
+}'
+
+# Block Public Access
+aws s3api put-public-access-block --bucket "$S3_BUCKET" --public-access-block-configuration '{
+    "BlockPublicAcls": true,
+    "IgnorePublicAcls": true,
+    "BlockPublicPolicy": true,
+    "RestrictPublicBuckets": true
+}'
+
+# Enforce TLS (Bucket Policy)
+aws s3api put-bucket-policy --bucket "$S3_BUCKET" --policy '{
+    "Version": "2012-10-17",
+    "Statement": [{
+        "Sid": "EnforceTLS",
+        "Effect": "Deny",
+        "Principal": "*",
+        "Action": "s3:*",
+        "Resource": ["arn:aws:s3:::'"$S3_BUCKET"'/*", "arn:aws:s3:::'"$S3_BUCKET"'"],
+        "Condition": {
+            "Bool": {
+                "aws:SecureTransport": "false"
+            }
+        }
+    }]
+}'
+
 
 # Check if DynamoDB table exists
 if aws dynamodb describe-table --table-name "$DYNAMODB_TABLE" 2>/dev/null; then
