@@ -1,10 +1,10 @@
-// include "root" {
-//   path = find_in_parent_folders()
-// }
+include "root" {
+  path = find_in_parent_folders()
+}
 
-// terraform {
-//   source  = "tfr:///terraform-aws-modules/eks/aws?version=20.24.0"
-// }
+terraform {
+  source  = "tfr:///terraform-aws-modules/eks/aws?version=20.24.0"
+}
 
 // dependency "vnet" {
 //   config_path = "../vpc"

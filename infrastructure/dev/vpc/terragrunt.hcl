@@ -1,10 +1,10 @@
-// include "root" {
-//   path = find_in_parent_folders()
-// }
+include "root" {
+  path = find_in_parent_folders()
+}
 
-// terraform {
-//   source  = "tfr:///terraform-aws-modules/vpc/aws?version=5.8.1"
-// }
+terraform {
+  source  = "tfr:///terraform-aws-modules/vpc/aws?version=5.8.1"
+}
 
 // inputs = {
 //   name = "dev-vpc"
