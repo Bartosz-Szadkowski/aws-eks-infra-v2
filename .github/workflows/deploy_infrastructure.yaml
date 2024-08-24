@@ -29,6 +29,12 @@ jobs:
           curl -LO https://github.com/gruntwork-io/terragrunt/releases/download/v0.48.1/terragrunt_linux_amd64
           sudo mv terragrunt_linux_amd64 /usr/local/bin/terragrunt
           sudo chmod +x /usr/local/bin/terragrunt
+
+      - name: Create and Run S3 and DynamoDB setup script
+        run: |
+          echo "${{ secrets.CREATE_S3_AND_DYNAMODB_SH }}" > ./create_s3_and_dynamodb.sh
+          chmod +x ./create_s3_and_dynamodb.sh
+          ./create_s3_and_dynamodb.sh
       
       - name: Terragrunt Init
         run: |
