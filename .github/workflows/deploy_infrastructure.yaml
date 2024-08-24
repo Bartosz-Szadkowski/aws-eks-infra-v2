@@ -23,6 +23,12 @@ jobs:
           audience: sts.amazonaws.com
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
           aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Install Terragrunt
+        run: |
+          curl -LO https://github.com/gruntwork-io/terragrunt/releases/download/v0.48.1/terragrunt_linux_amd64
+          sudo mv terragrunt_linux_amd64 /usr/local/bin/terragrunt
+          sudo chmod +x /usr/local/bin/terragrunt
       
       - name: Terragrunt Init
         run: |
