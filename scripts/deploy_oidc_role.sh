@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Set variables
-ROLE_NAME="GitHubActionsRole"
+ROLE_NAME="GitHubActionsRoleEsta"
 ROLE_DESCRIPTION="Role for GitHub Actions workflows."
 POLICY_NAME="GitHubActionsPolicy"
 REPO_NAME="Bartosz-Szadkowski/aws-eks-infra-v2"
-OIDC_PROVIDER_URL="https://token.actions.githubusercontent.com"
+OIDC_PROVIDER_URL="token.actions.githubusercontent.com"
 
 # Fetch AWS account ID
 ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
@@ -57,7 +57,7 @@ fi
 echo "Attaching policies to IAM Role $ROLE_NAME..."
 
 # Replace with your specific policies
-POLICY_ARN="arn:aws:iam::aws:policy/ReadOnlyAccess"
+POLICY_ARN="arn:aws:iam::aws:policy/AdministratorAccess"
 
 aws iam attach-role-policy \
   --role-name "$ROLE_NAME" \
