@@ -24,8 +24,8 @@ inputs = {
   }
 
   vpc_id                   = dependency.vpc.vpc_id
-  subnet_ids               = [dependency.private_subnets[0], dependency.private_subnets[1], dependency.private_subnets[2]]
-  control_plane_subnet_ids = [dependency.private_subnets[3], dependency.private_subnets[4], dependency.private_subnets[5]]
+  subnet_ids               = [dependency.vpc.private_subnets[0], dependency.vpc.private_subnets[1], dependency.vpc.private_subnets[2]]
+  control_plane_subnet_ids = [dependency.vpc.private_subnets[3], dependency.vpc.private_subnets[4], dependency.vpc.private_subnets[5]]
 
   # EKS Managed Node Group(s)
   eks_managed_node_group_defaults = {
