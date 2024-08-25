@@ -6,7 +6,7 @@ terraform {
   source  = "tfr:///terraform-aws-modules/eks/aws?version=20.24.0"
 }
 
-dependency "vnet" {
+dependency "vpc" {
   config_path = "../vpc"
 }
 
