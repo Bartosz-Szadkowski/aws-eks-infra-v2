@@ -49,7 +49,7 @@ inputs = {
 
   access_entries = {
       super-admin = {
-        principal_arn = "arn:aws:iam::${local.aws-account-id}:role/${local.superadmin-role}"
+        principal_arn = "arn:aws:iam::500494385031:user/cloud_user"
 
         policy_associations = {
           this = {
