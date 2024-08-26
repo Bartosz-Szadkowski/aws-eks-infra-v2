@@ -48,13 +48,18 @@ inputs = {
   enable_cluster_creator_admin_permissions = true
 
   access_entries = {
-    eks_admin_user = {
-      rolearn  = null
-      userarn  = "arn:aws:iam::500494385031:user/cloud_user"
-      username = "admin"
-      groups   = ["system:masters"]
-    }
-  }
+      super-admin = {
+        principal_arn = "arn:aws:iam::${local.aws-account-id}:role/${local.superadmin-role}"
+
+        policy_associations = {
+          this = {
+            policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+            access_scope = {
+              type = "cluster"
+            }
+          }
+        }
+      }
 
   tags = {
     Environment = "dev"
