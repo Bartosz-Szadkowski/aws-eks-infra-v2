@@ -60,6 +60,7 @@ inputs = {
           }
         }
       }
+  }
 
   tags = {
     Environment = "dev"
