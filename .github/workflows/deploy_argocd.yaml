@@ -1,0 +1,63 @@
+name: Deploy ArgoCD
+on:
+  workflow_dispatch:
+    
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  terragrunt_plan:
+    name: Deploy Infrastructure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          audience: sts.amazonaws.com
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Update kubeconfig
+        run: aws eks --region ${{ vars.AWS_REGION }} update-kubeconfig --name dev-cluster
+  
+      - name: Install ArgoCD using Helm
+        run: |
+            helm repo add argo https://argoproj.github.io/argo-helm
+            helm repo update
+            helm install argocd argo/argo-cd --namespace argocd --create-namespace -f ./helm-values/argocd-values.yaml
+  
+      - name: Wait for ArgoCD to be ready
+        run: kubectl rollout status deployment/argocd-server -n argocd
+  
+      - name: Get ArgoCD initial password
+        id: argocd_password
+        run: |
+          echo "ArgoCD initial password:"
+          kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 --decode
+          echo "::set-output name=password::$(kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 --decode)"
+  
+      - name: Install ArgoCD CLI
+        run: |
+          curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+          chmod +x /usr/local/bin/argocd
+  
+      - name: Login to ArgoCD
+        run: |
+          argocd login --insecure --username admin --password ${{ steps.argocd_password.outputs.password }} --grpc-web argocd-server:443
+  
+      - name: Register EKS Cluster with ArgoCD
+        run: |
+          argocd cluster add dev-cluster
+  
+      - name: Create ArgoCD Application (Optional)
+        run: |
+          argocd app create my-app \
+            --repo https://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@github.com/Bartosz-Szadkowski/aws-eks-infra-v2.git \
+            --path kubernetes/ \
+            --dest-server https://kubernetes.default.svc \
+            --dest-namespace default \
+            --sync-policy auto
