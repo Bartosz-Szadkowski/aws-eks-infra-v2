@@ -28,22 +28,40 @@ jobs:
         run: |
           helm repo add argo https://argoproj.github.io/argo-helm
           helm repo update
-          helm install argocd argo/argo-cd --namespace argocd --create-namespace 
+          if helm ls -n argocd | grep -q argocd; then
+            echo "ArgoCD is already installed. Skipping installation."
+          else
+            helm install argocd argo/argo-cd --namespace argocd --create-namespace
+          fi
   
       - name: Wait for ArgoCD to be ready
-        run: kubectl rollout status deployment/argocd-server -n argocd
+        run: |
+          if kubectl get deployment argocd-server -n argocd; then
+            kubectl rollout status deployment/argocd-server -n argocd
+          else
+            echo "ArgoCD server deployment not found. Skipping wait."
+          fi
   
       - name: Get ArgoCD initial password
         id: argocd_password
         run: |
-          PASSWORD=$(kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 --decode)
-          echo "::add-mask::$PASSWORD"
-          echo "::set-output name=password::$PASSWORD"
+          if kubectl get secret argocd-initial-admin-secret -n argocd; then
+            PASSWORD=$(kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 --decode)
+            echo "::add-mask::$PASSWORD"
+            echo "::set-output name=password::$PASSWORD"
+          else
+            echo "ArgoCD initial password secret not found."
+            echo "::set-output name=password::"
+          fi
 
       - name: Install ArgoCD CLI
         run: |
-          curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
-          chmod +x /usr/local/bin/argocd
+          if ! command -v argocd &> /dev/null; then
+            curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+            chmod +x /usr/local/bin/argocd
+          else
+            echo "ArgoCD CLI is already installed. Skipping installation."
+          fi
   
       - name: Forward ArgoCD server port
         run: kubectl port-forward svc/argocd-server -n argocd 8080:443 &
@@ -52,19 +70,31 @@ jobs:
         env:
           ARGOCD_PASSWORD: ${{ steps.argocd_password.outputs.password }}
         run: |
-          argocd login localhost:8080 --username admin --password "$ARGOCD_PASSWORD" --insecure --grpc-web
+          if [ -n "$ARGOCD_PASSWORD" ]; then
+            argocd login localhost:8080 --username admin --password "$ARGOCD_PASSWORD" --insecure --grpc-web
+          else
+            echo "ArgoCD login skipped due to missing password."
+          fi
 
       - name: Register EKS Cluster with ArgoCD
         run: |
-          argocd cluster add dev-cluster
+          if argocd cluster list | grep -q dev-cluster; then
+            echo "Cluster dev-cluster is already registered with ArgoCD."
+          else
+            argocd cluster add dev-cluster
+          fi
   
       - name: Create ArgoCD Application (Optional)
         env:
           REPOSITORY_TOKEN_ACCESS: ${{ secrets.REPOSITORY_TOKEN_ACCESS }}
         run: |
-          argocd app create nginx \
-            --repo ${{ secrets.REPOSITORY_TOKEN_ACCESS }} \
-            --path kubernetes/ \
-            --dest-server https://kubernetes.default.svc \
-            --dest-namespace default \
-            --sync-policy auto
+          if argocd app list | grep -q nginx; then
+            echo "ArgoCD application 'nginx' already exists."
+          else
+            argocd app create nginx \
+              --repo ${{ secrets.REPOSITORY_TOKEN_ACCESS }} \
+              --path kubernetes/ \
+              --dest-server https://kubernetes.default.svc \
+              --dest-namespace default \
+              --sync-policy auto
+          fi
