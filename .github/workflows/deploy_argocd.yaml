@@ -23,7 +23,14 @@ jobs:
 
       - name: Update kubeconfig
         run: aws eks --region ${{ vars.AWS_REGION }} update-kubeconfig --name dev-cluster
-  
+
+      - name: Get EKS Cluster ARN
+        id: cluster_arn
+        run: |
+          CLUSTER_ARN=$(aws eks describe-cluster --name dev-cluster --region ${{ vars.AWS_REGION }} --query "cluster.arn" --output text)
+          echo "Cluster ARN: $CLUSTER_ARN"
+          echo "::set-output name=arn::$CLUSTER_ARN"
+
       - name: Install ArgoCD using Helm
         run: |
           helm repo add argo https://argoproj.github.io/argo-helm
@@ -78,10 +85,10 @@ jobs:
 
       - name: Register EKS Cluster with ArgoCD
         run: |
-          if argocd cluster list | grep -q dev-cluster; then
+          if argocd cluster list | grep -q '${{ steps.cluster_arn.outputs.arn }}'; then
             echo "Cluster dev-cluster is already registered with ArgoCD."
           else
-            argocd cluster add arn:aws:eks:us-east-1:975050229010:cluster/dev-cluster
+            argocd cluster add ${{ steps.cluster_arn.outputs.arn }}
           fi
   
       - name: Create ArgoCD Application (Optional)
