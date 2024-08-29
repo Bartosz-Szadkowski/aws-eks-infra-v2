@@ -81,7 +81,7 @@ jobs:
           if argocd cluster list | grep -q dev-cluster; then
             echo "Cluster dev-cluster is already registered with ArgoCD."
           else
-            argocd cluster add dev-cluster
+            argocd cluster add arn:aws:eks:us-east-1:975050229010:cluster/dev-cluster
           fi
   
       - name: Create ArgoCD Application (Optional)
