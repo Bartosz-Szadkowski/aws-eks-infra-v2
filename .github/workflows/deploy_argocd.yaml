@@ -95,10 +95,10 @@ jobs:
         env:
           REPOSITORY_TOKEN_ACCESS: ${{ secrets.REPOSITORY_TOKEN_ACCESS }}
         run: |
-          if argocd app list | grep -q nginx; then
-            echo "ArgoCD application 'nginx' already exists."
+          if argocd app list | grep -q sockshop; then
+            echo "ArgoCD application 'sockshop' already exists."
           else
-            argocd app create nginx \
+            argocd app create sockshop \
               --repo ${{ secrets.REPOSITORY_TOKEN_ACCESS }} \
               --path kubernetes/ \
               --dest-server https://kubernetes.default.svc \
