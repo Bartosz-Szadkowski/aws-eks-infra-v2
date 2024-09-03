@@ -100,7 +100,7 @@ jobs:
           else
             argocd app create magneto \
               --repo ${{ secrets.REPOSITORY_TOKEN_ACCESS }} \
-              --revision: 'k8s/deploy-ingress-controller' \
+              --revision 'k8s/deploy-ingress-controller' \
               --path kubernetes/ \
               --dest-server https://kubernetes.default.svc \
               --dest-namespace default \
