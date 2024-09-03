@@ -95,11 +95,12 @@ jobs:
         env:
           REPOSITORY_TOKEN_ACCESS: ${{ secrets.REPOSITORY_TOKEN_ACCESS }}
         run: |
-          if argocd app list | grep -q sockshop; then
-            echo "ArgoCD application 'sockshop' already exists."
+          if argocd app list | grep -q magneto; then
+            echo "ArgoCD application 'magneto' already exists."
           else
-            argocd app create sockshop \
+            argocd app create magneto \
               --repo ${{ secrets.REPOSITORY_TOKEN_ACCESS }} \
+              --targetRevision: 'k8s/deploy-ingress-controller' \
               --path kubernetes/ \
               --dest-server https://kubernetes.default.svc \
               --dest-namespace default \
