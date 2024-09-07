@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: 12-factor-python-app
+  name: python-web-app
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: 12-factor-python-app
+      app: python-web-app
   template:
     metadata:
       labels:
-        app: 12-factor-python-app
+        app: python-web-app
     spec:
       containers:
-      - name: 12-factor-python-app
-        image: bszadkowski/12-factor-python-app:latest
+      - name: python-web-app
+        image: bszadkowski/python-web-app:latest
         ports:
         - containerPort: 5000
         env:

@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: 12-factor-python-app-service
+  name: python-web-app-service
 spec:
   selector:
-    app: 12-factor-python-app
+    app: python-web-app
   ports:
     - protocol: TCP
       port: 80
