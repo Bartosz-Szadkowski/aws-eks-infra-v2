@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 12-factor-python-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: 12-factor-python-app
+  template:
+    metadata:
+      labels:
+        app: 12-factor-python-app
+    spec:
+      containers:
+      - name: 12-factor-python-app
+        image: bszadkowski/12-factor-python-app:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: APP_MESSAGE
+          value: "Hello from the 12-factor Esta Python app running on EKS!"
