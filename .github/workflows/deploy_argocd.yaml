@@ -95,10 +95,10 @@ jobs:
         env:
           REPOSITORY_TOKEN_ACCESS: ${{ secrets.REPOSITORY_TOKEN_ACCESS }}
         run: |
-          if argocd app list | grep -q magneto; then
-            echo "ArgoCD application 'magneto' already exists."
+          if argocd app list | grep -q web; then
+            echo "ArgoCD application 'web' already exists."
           else
-            argocd app create magneto \
+            argocd app create web \
               --repo ${{ secrets.REPOSITORY_TOKEN_ACCESS }} \
               --path kubernetes/ \
               --dest-server https://kubernetes.default.svc \

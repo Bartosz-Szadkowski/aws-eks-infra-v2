@@ -13,3 +13,13 @@ remote_state {
     dynamodb_table = "my-lock-esta-table-v5"
   }
 }
+
+generate "provider" {
+  path = "provider.tf"
+  if_exists = "overwrite_terragrunt"
+  contents = <<EOF
+provider "aws" {
+    region = "us-east-1"
+}
+EOF
+}

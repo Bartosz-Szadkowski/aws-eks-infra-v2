@@ -12,6 +12,7 @@ spec:
       labels:
         app: python-web-app
     spec:
+      serviceAccountName: web-sa
       containers:
       - name: python-web-app
         image: bszadkowski/python-web-app:latest
