@@ -3,10 +3,10 @@
 set -e
 
 # Variables
-S3_BUCKET="my-terraform-esta-state-v6"
+S3_BUCKET="my-terraform-esta-state-v1"
 REGION="us-east-1"
 KMS_KEY_ID="your-kms-key-esta-id"  
-DYNAMODB_TABLE="my-lock-esta-table-v6"
+DYNAMODB_TABLE="my-lock-esta-table-v1"
 
 # Check if S3 bucket exists
 if aws s3api head-bucket --bucket "$S3_BUCKET" 2>/dev/null; then
