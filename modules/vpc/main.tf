@@ -1,7 +1,3 @@
-####################
-## VPC
-####################
-
 resource "aws_vpc" "this" {
   cidr_block       = var.vpc_cidr_block
   instance_tenancy = "default"
@@ -15,9 +11,6 @@ resource "aws_vpc" "this" {
   }
 }
 
-####################
-## PUBLIC SUBNETS
-####################
 resource "aws_subnet" "public" {
   count = length(var.public_subnets_cidr_blocks)
 
@@ -30,10 +23,6 @@ resource "aws_subnet" "public" {
   }
 }
 
-####################
-## IGW 
-####################
-
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.this.id
 
@@ -41,10 +30,6 @@ resource "aws_internet_gateway" "igw" {
     Name = "${var.tags["Environment"]}-internet-gateway"
   }
 }
-
-####################
-## PUBLIC RT
-####################
 
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.this.id
@@ -65,10 +50,6 @@ resource "aws_route_table_association" "public_association" {
   route_table_id = aws_route_table.public.id
 }
 
-
-####################
-## PRIVATE SUBNETS EKS
-####################
 resource "aws_subnet" "private_eks" {
   count = length(var.private_subnets_eks_cidr_blocks)
 
@@ -80,10 +61,6 @@ resource "aws_subnet" "private_eks" {
     Name = "${var.tags["Environment"]}-private-subnet-eks-${count.index + 1}"
   }
 }
-
-####################
-## PRIVATE EKS RT
-####################
 
 resource "aws_route_table" "private_eks" {
   count  = 2  # Create one route table for each AZ (replace with the number of AZs)
@@ -105,9 +82,6 @@ resource "aws_route_table_association" "private_eks_association" {
   route_table_id = aws_route_table.private_eks[count.index].id
 }
 
-####################
-## PRIVATE SUBNETS RDS
-####################
 resource "aws_subnet" "private_rds" {
   count = length(var.private_subnets_rds_cidr_blocks)
 
@@ -119,10 +93,6 @@ resource "aws_subnet" "private_rds" {
     Name = "${var.tags["Environment"]}-private-subnet-rds-${count.index + 1}"
   }
 }
-
-####################
-## PRIVATE RDS RT
-####################
 
 resource "aws_route_table" "private_rds" {
   vpc_id = aws_vpc.this.id
@@ -137,10 +107,6 @@ resource "aws_route_table_association" "private_rds_association" {
   subnet_id    = aws_subnet.private_rds[count.index].id
   route_table_id = aws_route_table.private_rds.id
 }
-
-####################
-## NAT GW
-####################
 
 resource "aws_eip" "nat" {
   count = 2  # Create NAT gateways in both public subnets for HA
@@ -158,10 +124,6 @@ resource "aws_nat_gateway" "nat_gw" {
     Name = "${var.tags["Environment"]}-nat-gw-${count.index + 1}"
   }
 }
-
-####################
-## AWS ENDPOINTS
-####################
 
 resource "aws_vpc_endpoint" "s3" {
   vpc_id       = aws_vpc.this.id
