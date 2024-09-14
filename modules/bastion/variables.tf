@@ -20,9 +20,9 @@ variable "instance_type" {
 }
 
 variable "tags" {
-  type        = map(string)
-  default     = {
-    Terraform = "true"
+  type = map(string)
+  default = {
+    Terraform   = "true"
     Environment = "dev"
   }
 }
