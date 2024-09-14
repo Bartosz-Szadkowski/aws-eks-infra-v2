@@ -8,15 +8,10 @@ variable "subnet_id" {
   type        = string
 }
 
-variable "vpc_cidr" {
-  description = "The CIDR block of the VPC"
-  type        = string
-}
-
-variable "bastion_ami" {
-  description = "The AMI ID for the bastion host"
-  type        = string
-}
+# variable "vpc_cidr" {
+#   description = "The CIDR block of the VPC"
+#   type        = string
+# }
 
 variable "instance_type" {
   description = "Instance type for the bastion host"
@@ -24,17 +19,10 @@ variable "instance_type" {
   default     = "t2.micro"
 }
 
-variable "ssh_key_name" {
-  description = "Name of the SSH key pair to use for accessing the bastion host"
-  type        = string
-}
-
-variable "admin_ip" {
-  description = "The IP address from which SSH access is allowed"
-  type        = string
-}
-
 variable "tags" {
-  description = "Tags for the resources"
   type        = map(string)
+  default     = {
+    Terraform = "true"
+    Environment = "dev"
+  }
 }

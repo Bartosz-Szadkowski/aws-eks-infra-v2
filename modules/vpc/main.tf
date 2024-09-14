@@ -134,13 +134,74 @@ resource "aws_vpc_endpoint" "s3" {
   }
 }
 
+resource "aws_security_group" "vpc_endpoints_sg" {
+  vpc_id = aws_vpc.this.id
+  description = "Security group for VPC endpoints"
+}
+
+resource "aws_vpc_security_group_egress_rule" "endpoints_outbound" {
+  security_group_id = aws_security_group.vpc_endpoints_sg.id
+  cidr_ipv4       = "0.0.0.0/0"
+  ip_protocol          = "-1"
+  description       = "Allow outbound traffic in VPC"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "endpoints_inbound" {
+  security_group_id = aws_security_group.vpc_endpoints_sg.id
+  cidr_ipv4       = "0.0.0.0/0"
+  ip_protocol          = "-1"
+  description       = "Allow inbound traffic in VPC"
+}
+
+# VPC Endpoint for CW Logs
 resource "aws_vpc_endpoint" "cloudwatch_logs" {
   vpc_id       = aws_vpc.this.id
   service_name = "com.amazonaws.${var.region}.logs"
   vpc_endpoint_type = "Interface" 
   subnet_ids = aws_subnet.private_eks[*].id
+  security_group_ids = [aws_security_group.vpc_endpoints_sg.id]
+  private_dns_enabled = true
   tags = {
     Name = "${var.tags["Environment"]}-cloudwatch-logs-endpoint"
+  }
+}
+
+# VPC Endpoint for SSM
+resource "aws_vpc_endpoint" "ssm" {
+  vpc_id             = aws_vpc.this.id
+  service_name       = "com.amazonaws.${var.region}.ssm"
+  subnet_ids         = aws_subnet.private_eks.*.id  # Attach to private subnets
+  security_group_ids = [aws_security_group.vpc_endpoints_sg.id]
+  private_dns_enabled = true
+  vpc_endpoint_type = "Interface"
+  tags = {
+    Name = "${var.tags["Environment"]}-ssm-endpoint"
+  }
+}
+
+# VPC Endpoint for EC2 Messages
+resource "aws_vpc_endpoint" "ec2messages" {
+  vpc_id             = aws_vpc.this.id
+  service_name       = "com.amazonaws.${var.region}.ec2messages"
+  subnet_ids         = aws_subnet.private_eks.*.id  # Attach to private subnets
+  security_group_ids = [aws_security_group.vpc_endpoints_sg.id]
+  private_dns_enabled = true
+  vpc_endpoint_type = "Interface"
+  tags = {
+    Name = "${var.tags["Environment"]}-ec2messages-endpoint"
+  }
+}
+
+# VPC Endpoint for SSM Messages
+resource "aws_vpc_endpoint" "ssmmessages" {
+  vpc_id             = aws_vpc.this.id
+  service_name       = "com.amazonaws.${var.region}.ssmmessages"
+  subnet_ids         = aws_subnet.private_eks.*.id  # Attach to private subnets
+  security_group_ids = [aws_security_group.vpc_endpoints_sg.id]
+  private_dns_enabled = true
+  vpc_endpoint_type = "Interface"
+  tags = {
+    Name = "${var.tags["Environment"]}-ssmmessages-endpoint"
   }
 }
 
