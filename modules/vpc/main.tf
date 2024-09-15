@@ -11,6 +11,10 @@ resource "aws_vpc" "this" {
   }
 }
 
+##################
+### PUBLIC SUBNETS
+##################
+
 resource "aws_subnet" "public" {
   count = length(var.public_subnets_cidr_blocks)
 
@@ -23,6 +27,10 @@ resource "aws_subnet" "public" {
   }
 }
 
+##################
+### IGW
+##################
+
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.this.id
 
@@ -30,6 +38,10 @@ resource "aws_internet_gateway" "igw" {
     Name = "${var.tags["Environment"]}-internet-gateway"
   }
 }
+
+##################
+### RT PUBLIC SUBNETS
+##################
 
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.this.id
@@ -50,6 +62,10 @@ resource "aws_route_table_association" "public_association" {
   route_table_id = aws_route_table.public.id
 }
 
+##################
+### EKS SUBNETS
+##################
+
 resource "aws_subnet" "private_eks" {
   count = length(var.private_subnets_eks_cidr_blocks)
 
@@ -61,6 +77,10 @@ resource "aws_subnet" "private_eks" {
     Name = "${var.tags["Environment"]}-private-subnet-eks-${count.index + 1}"
   }
 }
+
+##################
+### RT EKS SUBNETS
+##################
 
 resource "aws_route_table" "private_eks" {
   count  = 2 # Create one route table for each AZ (replace with the number of AZs)
@@ -82,6 +102,10 @@ resource "aws_route_table_association" "private_eks_association" {
   route_table_id = aws_route_table.private_eks[count.index].id
 }
 
+##################
+### RDS SUBNETS
+##################
+
 resource "aws_subnet" "private_rds" {
   count = length(var.private_subnets_rds_cidr_blocks)
 
@@ -93,6 +117,10 @@ resource "aws_subnet" "private_rds" {
     Name = "${var.tags["Environment"]}-private-subnet-rds-${count.index + 1}"
   }
 }
+
+##################
+### RT RDS SUBNETS
+##################
 
 resource "aws_route_table" "private_rds" {
   vpc_id = aws_vpc.this.id
@@ -107,6 +135,10 @@ resource "aws_route_table_association" "private_rds_association" {
   subnet_id      = aws_subnet.private_rds[count.index].id
   route_table_id = aws_route_table.private_rds.id
 }
+
+##################
+### NAT GATEWAYS
+##################
 
 resource "aws_eip" "nat" {
   count  = 2 # Create NAT gateways in both public subnets for HA
@@ -125,6 +157,15 @@ resource "aws_nat_gateway" "nat_gw" {
   }
 }
 
+##################
+### AWS PRIVATE ENDPOINTS
+##################
+
+resource "aws_security_group" "vpc_endpoints_sg" {
+  vpc_id      = aws_vpc.this.id
+  description = "Security group for VPC endpoints"
+}
+
 resource "aws_vpc_endpoint" "s3" {
   vpc_id          = aws_vpc.this.id
   service_name    = "com.amazonaws.${var.region}.s3"
@@ -132,11 +173,6 @@ resource "aws_vpc_endpoint" "s3" {
   tags = {
     Name = "${var.tags["Environment"]}-s3-endpoint"
   }
-}
-
-resource "aws_security_group" "vpc_endpoints_sg" {
-  vpc_id      = aws_vpc.this.id
-  description = "Security group for VPC endpoints"
 }
 
 resource "aws_vpc_security_group_egress_rule" "endpoints_outbound" {
@@ -153,7 +189,6 @@ resource "aws_vpc_security_group_ingress_rule" "endpoints_inbound" {
   description       = "Allow inbound traffic in VPC"
 }
 
-# VPC Endpoint for CW Logs
 resource "aws_vpc_endpoint" "cloudwatch_logs" {
   vpc_id              = aws_vpc.this.id
   service_name        = "com.amazonaws.${var.region}.logs"
@@ -166,7 +201,6 @@ resource "aws_vpc_endpoint" "cloudwatch_logs" {
   }
 }
 
-# VPC Endpoint for SSM
 resource "aws_vpc_endpoint" "ssm" {
   vpc_id              = aws_vpc.this.id
   service_name        = "com.amazonaws.${var.region}.ssm"
@@ -179,7 +213,6 @@ resource "aws_vpc_endpoint" "ssm" {
   }
 }
 
-# VPC Endpoint for EC2 Messages
 resource "aws_vpc_endpoint" "ec2messages" {
   vpc_id              = aws_vpc.this.id
   service_name        = "com.amazonaws.${var.region}.ec2messages"
@@ -192,7 +225,6 @@ resource "aws_vpc_endpoint" "ec2messages" {
   }
 }
 
-# VPC Endpoint for SSM Messages
 resource "aws_vpc_endpoint" "ssmmessages" {
   vpc_id              = aws_vpc.this.id
   service_name        = "com.amazonaws.${var.region}.ssmmessages"
