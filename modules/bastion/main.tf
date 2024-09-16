@@ -135,19 +135,29 @@ install_oh_my_zsh root $root_home
 # Print a message indicating completion
 echo "Shell for all users has been updated to zsh, and Oh My Zsh installed."
 
-# Install kubectl
-    curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.21.14/2022-09-21/bin/linux/amd64/kubectl
-    chmod +x ./kubectl
-    sudo mv ./kubectl /usr/local/bin
-
+    KUBECTL_VERSION="v1.28.0"
+    ARGOCD_VERSION="v2.7.4"
+    
+    # Install kubectl
+    curl -LO "https://dl.k8s.io/release/$${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+    chmod +x kubectl
+    sudo mv kubectl /usr/local/bin/
+    
     # Install ArgoCD CLI
-    curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
-    chmod +x ./argocd
-    sudo mv ./argocd /usr/local/bin
+    curl -sSL -o argocd "https://github.com/argoproj/argo-cd/releases/download/$${ARGOCD_VERSION}/argocd-linux-amd64"
+    chmod +x argocd
+    sudo mv argocd /usr/local/bin/
+    
+    # For root user
+    echo 'export PATH=$$PATH:/usr/local/bin' >> /root/.zshrc
 
-    # Ensure /usr/local/bin is in the PATH (although typically it is by default)
-    echo 'export PATH=$PATH:/usr/local/bin' >> ~/.bashrc
-    source ~/.bashrc
+    # For ec2-user
+    echo 'export PATH=$$PATH:/usr/local/bin' >> /home/ec2-user/.zshrc
+    chown ec2-user:ec2-user /home/ec2-user/.zshrc
+
+    # Ensure changes are applied
+    source /root/.zshrc
+    sudo -u ec2-user source /home/ec2-user/.zshrc
 
        EOF
 
