@@ -73,9 +73,11 @@ resource "aws_iam_instance_profile" "ssm_instance_profile" {
 ##################
 
 resource "aws_instance" "bastion" {
+  for_each      = toset(var.subnet_ids)
   ami                    = data.aws_ami.amazon_linux.id # Use the fetched AMI ID
   instance_type          = var.instance_type
-  subnet_id              = var.subnet_id # Subnet should be a public subnet
+ # subnet_id              = var.subnet_id # Subnet should be a public subnet
+ subnet_id     = each.value  # This will loop through each subnet ID
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]
 
   iam_instance_profile = aws_iam_instance_profile.ssm_instance_profile.name
@@ -158,6 +160,7 @@ echo "Shell for all users has been updated to zsh, and Oh My Zsh installed."
     # Ensure changes are applied
     source /root/.zshrc
     sudo -u ec2-user source /home/ec2-user/.zshrc
+
 
        EOF
 

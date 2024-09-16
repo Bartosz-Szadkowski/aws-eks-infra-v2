@@ -1,7 +1,7 @@
-output "bastion_public_ip" {
-  description = "The public IP address of the bastion host"
-  value       = aws_instance.bastion.public_ip
-}
+# output "bastion_public_ips" {
+#   description = "Public IPs of the bastion hosts"
+#   value       = [for instance in aws_instance.bastion : instance.public_ip]
+# }
 
 output "bastion_security_group_id" {
   description = "The security group ID of the bastion host"

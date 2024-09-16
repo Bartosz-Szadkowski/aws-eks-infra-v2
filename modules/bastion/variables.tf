@@ -3,15 +3,10 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "subnet_id" {
+variable "subnet_ids" {
   description = "The ID of the public subnet where the bastion host will be placed"
-  type        = string
+  type        = list(string)
 }
-
-# variable "vpc_cidr" {
-#   description = "The CIDR block of the VPC"
-#   type        = string
-# }
 
 variable "instance_type" {
   description = "Instance type for the bastion host"
