@@ -2,6 +2,8 @@ include "root" {
   path = find_in_parent_folders()
 }
 
+# BELOW IS THE TF OFFICIAL VPC MODULE, FOR NOW IS USING IN CI/CD SETUP
+
 terraform {
   source  = "tfr:///terraform-aws-modules/vpc/aws?version=5.8.1"
 }

@@ -1,17 +1,17 @@
 resource "aws_s3_bucket" "application_bucket" {
-  bucket = var.bucket_prefix
+  bucket        = var.bucket_prefix
   force_destroy = true
-  tags   = var.tags
-  }
+  tags          = var.tags
+}
 
-  # Public access block to prevent accidental exposure
-  resource "aws_s3_bucket_public_access_block" "application_bucket_public_access" {
-    bucket = aws_s3_bucket.application_bucket.id
-    block_public_acls   = true
-    block_public_policy = true
-    ignore_public_acls  = true
-    restrict_public_buckets = true
-  }
+# Public access block to prevent accidental exposure
+resource "aws_s3_bucket_public_access_block" "application_bucket_public_access" {
+  bucket                  = aws_s3_bucket.application_bucket.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
 
 resource "aws_s3_bucket_versioning" "application_bucket_versioning" {
   bucket = aws_s3_bucket.application_bucket.id
