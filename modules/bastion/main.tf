@@ -151,18 +151,15 @@ echo "Shell for all users has been updated to zsh, and Oh My Zsh installed."
     sudo mv argocd /usr/local/bin/
     
     # For root user
-    echo 'export PATH=$$PATH:/usr/local/bin' >> /root/.zshrc
+    echo 'export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin >> /root/.zshrc
 
     # For ec2-user
-    echo 'export PATH=$$PATH:/usr/local/bin' >> /home/ec2-user/.zshrc
+    echo 'export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin >> /home/ec2-user/.zshrc
     chown ec2-user:ec2-user /home/ec2-user/.zshrc
 
     # Ensure changes are applied
     source /root/.zshrc
     sudo -u ec2-user source /home/ec2-user/.zshrc
-
-    export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
 
        EOF
 
