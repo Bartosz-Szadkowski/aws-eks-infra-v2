@@ -161,6 +161,8 @@ echo "Shell for all users has been updated to zsh, and Oh My Zsh installed."
     source /root/.zshrc
     sudo -u ec2-user source /home/ec2-user/.zshrc
 
+    export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
 
        EOF
 
