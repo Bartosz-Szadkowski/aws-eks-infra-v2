@@ -46,6 +46,21 @@ jobs:
           cd infrastructure/dev/vpc
           terragrunt apply -auto-approve
 
+      - name: Terragrunt Init Bastion
+        run: |
+          cd infrastructure/dev/bastion
+          terragrunt init
+
+      - name: Terragrunt Plan Bastion
+        run: |
+          cd infrastructure/dev/bastion
+          terragrunt plan
+        
+      - name: Terragrunt Apply Bastion
+        run: |
+          cd infrastructure/dev/bastion
+          terragrunt apply -auto-approve
+
       - name: Terragrunt Init EKS
         run: |
           cd infrastructure/dev/eks
