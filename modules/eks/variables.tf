@@ -5,7 +5,7 @@ variable "region" {
 
 variable "cluster_version" {
   type    = string
-  default = "1.24"
+  default = "1.30"
 }
 
 variable "vpc_id" {

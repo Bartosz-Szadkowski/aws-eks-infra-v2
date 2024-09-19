@@ -128,3 +128,10 @@ resource "aws_vpc_security_group_ingress_rule" "eks_cluster_ingress" {
   ip_protocol       = "tcp"
   description       = "Allow traffic from eks worker nodes in vpc"
 }
+
+resource "aws_eks_access_entry" "admin_access_entry" {
+  cluster_name      = aws_eks_cluster.this.name
+  principal_arn     = "arn:aws:iam::533267153156:user/cloud_user"
+  kubernetes_groups = ["system:masters"]
+  type              = "STANDARD"
+}
