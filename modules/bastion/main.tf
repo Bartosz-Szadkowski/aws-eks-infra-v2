@@ -43,7 +43,7 @@ data "aws_ami" "amazon_linux" {
 ### IAM INSTANCE PROFILE 
 ##################
 
-resource "aws_iam_role" "ssm_role" {
+resource "aws_iam_role" "instance_role" {
   name = "ssm-role"
 
   assume_role_policy = jsonencode({
@@ -59,13 +59,13 @@ resource "aws_iam_role" "ssm_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "ssm_policy" {
-  role       = aws_iam_role.ssm_role.name
+  role       = aws_iam_role.instance_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore" # SSM Permissions
 }
 
-resource "aws_iam_instance_profile" "ssm_instance_profile" {
+resource "aws_iam_instance_profile" "instance_profile" {
   name = "ssm-instance-profile"
-  role = aws_iam_role.ssm_role.name
+  role = aws_iam_role.instance_role.name
 }
 
 ##################
@@ -80,7 +80,7 @@ resource "aws_instance" "bastion" {
   subnet_id              = each.value # This will loop through each subnet ID
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]
 
-  iam_instance_profile = aws_iam_instance_profile.ssm_instance_profile.name
+  iam_instance_profile = aws_iam_instance_profile.instance_profile.name
 
   key_name = null # This disables SSH key-pair access
 

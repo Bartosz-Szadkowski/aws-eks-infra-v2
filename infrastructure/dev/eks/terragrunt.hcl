@@ -14,10 +14,15 @@ dependency "vpc" {
   config_path = "../vpc"
 }
 
+dependency "bastion" {
+  config_path = "../bastion"
+}
+
 inputs = {
   vpc_id = dependency.vpc.outputs.vpc_id
   subnet_ids = dependency.vpc.outputs.private_eks_subnet_ids
   vpc_cidr_block = dependency.vpc.outputs.vpc_cidr_block
+  admin_iam_role = dependency.bastion.outputs.instance_role_arn
   tags = {
     Terraform   = "true"
     Environment = "dev"

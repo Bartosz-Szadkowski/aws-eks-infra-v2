@@ -131,15 +131,14 @@ resource "aws_vpc_security_group_ingress_rule" "eks_cluster_ingress" {
 
 resource "aws_eks_access_entry" "admin_access_entry" {
   cluster_name  = aws_eks_cluster.this.name
-  principal_arn = "arn:aws:iam::533267153156:user/cloud_user"
-  #   kubernetes_groups = ["system:masters"]
+  principal_arn = var.admin_iam_role
   type = "STANDARD"
 }
 
 resource "aws_eks_access_policy_association" "admin_access_policy_association" {
   cluster_name  = aws_eks_cluster.this.name
   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy"
-  principal_arn = "arn:aws:iam::533267153156:user/cloud_user"
+  principal_arn = var.admin_iam_role
 
   access_scope {
     type = "cluster"

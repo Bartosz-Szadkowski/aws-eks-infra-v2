@@ -71,3 +71,7 @@ variable "ebs_volume_size" {
   type    = number
   default = 20 # 20 GB by default
 }
+
+variable "admin_iam_role" {
+  
+}
