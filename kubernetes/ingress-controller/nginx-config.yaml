@@ -1,9 +1,0 @@
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: nginx-config
-  namespace: nginx-ingress
-data:
-  proxy-protocol: "False"
-  real-ip-header: "X-Forwarded-For"
-  set-real-ip-from: "0.0.0.0/0"
