@@ -143,6 +143,11 @@ install_oh_my_zsh root $root_home
 # Print a message indicating completion
 echo "Shell for all users has been updated to zsh, and Oh My Zsh installed."
 
+yum remove awscli
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
     KUBECTL_VERSION="v1.28.0"
     ARGOCD_VERSION="v2.7.4"
     
