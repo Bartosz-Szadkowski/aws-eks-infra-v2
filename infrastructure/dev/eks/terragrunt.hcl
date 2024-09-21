@@ -10,15 +10,17 @@ terraform {
   source = "../../../modules/eks"
 }
 
-dependency "vpc" {
-  config_path = "../vpc"
-  assume_applied = true
+dependencies {
+  paths = ["../vpc", "../bastion"]
 }
 
-dependency "bastion" {
-  config_path = "../bastion"
-  assume_applied = true
-}
+// dependency "vpc" {
+//   config_path = "../vpc"
+// }
+
+// dependency "bastion" {
+//   config_path = "../bastion"
+// }
 
 inputs = {
   vpc_id                 = dependency.vpc.outputs.vpc_id

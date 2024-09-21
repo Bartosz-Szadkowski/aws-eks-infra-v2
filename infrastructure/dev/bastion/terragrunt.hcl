@@ -6,9 +6,12 @@ terraform {
   source = "../../../modules/bastion"
 }
 
-dependency "vpc" {
-  config_path = "../vpc"
-  assume_applied = true
+// dependency "vpc" {
+//   config_path = "../vpc"
+// }
+
+dependencies {
+  paths = ["../vpc"]
 }
 
 inputs = {
