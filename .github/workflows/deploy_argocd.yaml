@@ -22,12 +22,12 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Update kubeconfig
-        run: aws eks --region ${{ vars.AWS_REGION }} update-kubeconfig --name dev-cluster
+        run: aws eks --region ${{ vars.AWS_REGION }} update-kubeconfig --name dev-eks-cluster
 
       - name: Get EKS Cluster ARN
         id: cluster_arn
         run: |
-          CLUSTER_ARN=$(aws eks describe-cluster --name dev-cluster --region ${{ vars.AWS_REGION }} --query "cluster.arn" --output text)
+          CLUSTER_ARN=$(aws eks describe-cluster --name dev-eks-cluster --region ${{ vars.AWS_REGION }} --query "cluster.arn" --output text)
           echo "Cluster ARN: $CLUSTER_ARN"
           echo "::set-output name=arn::$CLUSTER_ARN"
 
