@@ -5,7 +5,7 @@ variable "region" {
 
 variable "cluster_version" {
   type    = string
-  default = "1.24"
+  default = "1.25"
 }
 
 variable "vpc_id" {
@@ -40,10 +40,6 @@ variable "instance_type" {
   default = "t3.medium"
 }
 
-# variable "key_name" {
-#   type = string
-# }
-
 variable "endpoint_private_access" {
   type    = bool
   default = true
@@ -67,15 +63,6 @@ variable "tags" {
   }
 }
 
-variable "ebs_volume_size" {
-  type    = number
-  default = 20 # 20 GB by default
-}
+variable "admin_iam_role" {}
 
-variable "admin_iam_role" {
-
-}
-
-variable "master_admin_iam_arn" {
-  
-}
+variable "master_admin_iam_arn" {}

@@ -4,10 +4,10 @@
 
 resource "aws_security_group" "bastion_sg" {
   vpc_id      = var.vpc_id
+  name = "${var.tags["Environment"]}-bastion-sg" 
   description = "Security group for the Bastion Host"
-
   tags = {
-    Name = "${var.tags["Environment"]}-bastion-sg"
+    Service = "${var.tags["Environment"]}-bastion-sg"
   }
 }
 
@@ -63,6 +63,7 @@ resource "aws_iam_role_policy_attachment" "ssm_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
+# This policy can be adjusted in the future to be more restrictive and tailored specifically for EKS admin purposes.
 resource "aws_iam_role_policy_attachment" "eks_admin_policy" {
   role       = aws_iam_role.instance_role.name
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
@@ -80,12 +81,10 @@ resource "aws_iam_instance_profile" "instance_profile" {
 
 resource "aws_instance" "bastion" {
   for_each      = toset(var.subnet_ids)
-  ami           = data.aws_ami.amazon_linux.id # Use the fetched AMI ID
+  ami           = data.aws_ami.amazon_linux.id 
   instance_type = var.instance_type
-  # subnet_id              = var.subnet_id # Subnet should be a public subnet
   subnet_id              = each.value # This will loop through each subnet ID
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]
-
   iam_instance_profile = aws_iam_instance_profile.instance_profile.name
 
   key_name = null # This disables SSH key-pair access
@@ -94,35 +93,35 @@ resource "aws_instance" "bastion" {
   user_data                   = <<-EOF
     #!/bin/bash
 
-# Update the system
-yum -y update
+    # Update the system
+    yum -y update
 
-# Install zsh
-yum -y install zsh
+    # Install zsh
+    yum -y install zsh
 
-# Install util-linux-user to use the 'chsh' command
-yum -y install util-linux-user
+    # Install util-linux-user to use the 'chsh' command
+    yum -y install util-linux-user
 
-# Install git and wget, needed for Oh My Zsh installation
-yum -y install git wget
+    # Install git and wget, needed for Oh My Zsh installation
+    yum -y install git wget
 
-# Function to install Oh My Zsh for a given user
-install_oh_my_zsh() {
-    local user=$1
-    local user_home=$2
+    # Function to install Oh My Zsh for a given user
+    install_oh_my_zsh() {
+      local user=$1
+      local user_home=$2
 
-    # Clone Oh My Zsh repository
-    sudo -u $user git clone https://github.com/ohmyzsh/ohmyzsh.git $user_home/.oh-my-zsh
+      # Clone Oh My Zsh repository
+      sudo -u $user git clone https://github.com/ohmyzsh/ohmyzsh.git $user_home/.oh-my-zsh
 
-    # Copy the zshrc template provided by Oh My Zsh
-    sudo -u $user cp $user_home/.oh-my-zsh/templates/zshrc.zsh-template $user_home/.zshrc
+      # Copy the zshrc template provided by Oh My Zsh
+      sudo -u $user cp $user_home/.oh-my-zsh/templates/zshrc.zsh-template $user_home/.zshrc
 
-    # Set the ownership of the .zshrc file to the user
-    chown $user:$user $user_home/.zshrc
-}
+      # Set the ownership of the .zshrc file to the user
+      chown $user:$user $user_home/.zshrc
+    }
 
-# Loop through each user and update their shell and install Oh My Zsh
-for user in $(awk -F: '{ if ($7 != "/sbin/nologin" && $7 != "/bin/false" && $1 != "root") print $1 }' /etc/passwd); do
+    # Loop through each user and update their shell and install Oh My Zsh
+    for user in $(awk -F: '{ if ($7 != "/sbin/nologin" && $7 != "/bin/false" && $1 != "root") print $1 }' /etc/passwd); do
     user_home=$(eval echo ~$user)
 
     # Change the shell to zsh for each user
@@ -133,21 +132,23 @@ for user in $(awk -F: '{ if ($7 != "/sbin/nologin" && $7 != "/bin/false" && $1 !
         # Install Oh My Zsh for this user
         install_oh_my_zsh $user $user_home
     fi
-done
+    done
 
-# Optionally, also change the shell for the root user and install Oh My Zsh
-chsh -s "$(which zsh)" root
-root_home=$(eval echo ~root)
-install_oh_my_zsh root $root_home
+    # Optionally, also change the shell for the root user and install Oh My Zsh
+    chsh -s "$(which zsh)" root
+    root_home=$(eval echo ~root)
+    install_oh_my_zsh root $root_home
 
-# Print a message indicating completion
-echo "Shell for all users has been updated to zsh, and Oh My Zsh installed."
+    # Print a message indicating completion
+    echo "Shell for all users has been updated to zsh, and Oh My Zsh installed."
 
-yum remove awscli
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
+    # AWS CLI 2 installation
+    yum remove awscli
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    unzip awscliv2.zip
+    sudo ./aws/install
 
+    # KUBECTL and ARGOCD CLI installtion
     KUBECTL_VERSION="v1.28.0"
     ARGOCD_VERSION="v2.7.4"
     

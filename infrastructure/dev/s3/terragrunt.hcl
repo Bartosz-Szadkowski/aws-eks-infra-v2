@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source  = "../../../modules/s3"
+  source = "../../../modules/s3"
 }
 
 
@@ -25,7 +25,7 @@ EOF
 inputs = {
   bucket_prefix = "application-bucket-esta-v1"
   tags = {
-    Terraform = "true"
+    Terraform   = "true"
     Environment = "dev"
   }
 }

@@ -1,6 +1,7 @@
 ##################
 ### EKS CLUSTER ROLE
 ##################
+
 resource "aws_iam_role" "eks_cluster_role" {
   name = "${var.tags["Environment"]}-eks-cluster-role"
 
@@ -17,18 +18,21 @@ resource "aws_iam_role" "eks_cluster_role" {
     ]
   })
 }
-# Attach necessary policies to EKS Cluster Role
+
 resource "aws_iam_role_policy_attachment" "eks_cluster_AmazonEKSClusterPolicy" {
   role       = aws_iam_role.eks_cluster_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
 }
+
 resource "aws_iam_role_policy_attachment" "eks_cluster_AmazonEKSServicePolicy" {
   role       = aws_iam_role.eks_cluster_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
 }
+
 ##################
 ### EKS WORKER NODES ROLE
 ##################
+
 resource "aws_iam_role" "eks_worker_node_role" {
   name = "${var.tags["Environment"]}-eks-worker-role"
 
@@ -45,16 +49,53 @@ resource "aws_iam_role" "eks_worker_node_role" {
     ]
   })
 }
-# Attach necessary policies to the worker node IAM Role
+
 resource "aws_iam_role_policy_attachment" "worker_nodes_AmazonEKSWorkerNodePolicy" {
   role       = aws_iam_role.eks_worker_node_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
 }
+
 resource "aws_iam_role_policy_attachment" "worker_nodes_AmazonEC2ContainerRegistryReadOnly" {
   role       = aws_iam_role.eks_worker_node_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
+
 resource "aws_iam_role_policy_attachment" "worker_nodes_AmazonEKSCNIPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
   role       = aws_iam_role.eks_worker_node_role.name
+}
+
+##################
+### K8 CLUSTER ACCESS FOR ADMINS
+##################
+
+# EKS admins access -> This should be more restrictive, with a dedicated IAM role.
+resource "aws_eks_access_entry" "admin_access_entry" {
+  cluster_name  = aws_eks_cluster.this.name
+  principal_arn = var.admin_iam_role
+  type          = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "admin_access_policy_association" {
+  cluster_name  = aws_eks_cluster.this.name
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+  principal_arn = var.admin_iam_role
+  access_scope {
+    type = "cluster"
+  }
+}
+
+# Master admin access
+resource "aws_eks_access_entry" "master_admin_access_entry" {
+  cluster_name  = aws_eks_cluster.this.name
+  principal_arn = var.master_admin_iam_arn
+  type          = "STANDARD"
+}
+resource "aws_eks_access_policy_association" "master_admin_access_policy_association" {
+  cluster_name  = aws_eks_cluster.this.name
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+  principal_arn = var.master_admin_iam_arn
+  access_scope {
+    type = "cluster"
+  }
 }

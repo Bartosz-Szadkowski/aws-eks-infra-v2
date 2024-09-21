@@ -11,6 +11,6 @@ dependency "vpc" {
 }
 
 inputs = {
- vpc_id = dependency.vpc.outputs.vpc_id
- subnet_ids = dependency.vpc.outputs.private_eks_subnet_ids
+  vpc_id     = dependency.vpc.outputs.vpc_id
+  subnet_ids = dependency.vpc.outputs.private_eks_subnet_ids
 }
