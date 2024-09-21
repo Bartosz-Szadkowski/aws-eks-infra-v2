@@ -6,11 +6,11 @@ remote_state {
   }
 
   config = {
-    bucket         = "my-terraform-esta-state-v2"
+    bucket         = "my-terraform-esta-state-v3"
     key            = "${path_relative_to_include()}/terraform.tfstate"
     region         = "us-east-1"
     encrypt        = true
-    dynamodb_table = "my-lock-esta-table-v2"
+    dynamodb_table = "my-lock-esta-table-v3"
   }
 }
 
