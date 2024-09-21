@@ -1,17 +1,13 @@
 name: Deploy AWS infrastructure
 on:
   workflow_dispatch:
-  # push:
-  #   branches:
-  #     - main
-  # workflow_call:
     
 permissions:
   id-token: write
   contents: read
 
 jobs:
-  terragrunt_plan:
+  deploy_infrastructure:
     name: Deploy Infrastructure
     runs-on: ubuntu-latest
     steps:
@@ -31,49 +27,13 @@ jobs:
           sudo mv terragrunt_linux_amd64 /usr/local/bin/terragrunt
           sudo chmod +x /usr/local/bin/terragrunt
 
-      - name: Terragrunt Init VPC
-        run: |
-          cd infrastructure/dev/vpc
-          terragrunt init
-
-      - name: Terragrunt Plan VPC
-        run: |
-          cd infrastructure/dev/vpc
-          terragrunt plan
-        
-      - name: Terragrunt Apply VPC
-        run: |
-          cd infrastructure/dev/vpc
-          terragrunt apply -auto-approve
-
-      - name: Terragrunt Init Bastion
-        run: |
-          cd infrastructure/dev/bastion
-          terragrunt init
-
-      - name: Terragrunt Plan Bastion
-        run: |
-          cd infrastructure/dev/bastion
-          terragrunt plan
-        
-      - name: Terragrunt Apply Bastion
-        run: |
-          cd infrastructure/dev/bastion
-          terragrunt apply -auto-approve
-
-      - name: Terragrunt Init EKS
-        run: |
-          cd infrastructure/dev/eks
-          terragrunt init
-
-      - name: Terragrunt Plan EKS
-        run: |
-          cd infrastructure/dev/eks
-          terragrunt plan
-          
-      - name: Terragrunt Apply EKS
-        run: |
-          cd infrastructure/dev/eks
-          terragrunt apply -auto-approve
+      - name: Terragrunt Plan 
+        run : |
+          cd infrastructure/ 
+          terragrunt run-all plan
       
-      
+      - name: Terragrunt Apply 
+        run: | 
+          cd infrastructure/
+          terragrunt run-all apply -auto-approve
+
