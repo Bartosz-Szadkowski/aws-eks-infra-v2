@@ -12,10 +12,12 @@ terraform {
 
 dependency "vpc" {
   config_path = "../vpc"
+  assume_applied = true
 }
 
 dependency "bastion" {
   config_path = "../bastion"
+  assume_applied = true
 }
 
 inputs = {

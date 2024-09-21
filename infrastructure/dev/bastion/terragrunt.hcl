@@ -8,6 +8,7 @@ terraform {
 
 dependency "vpc" {
   config_path = "../vpc"
+  assume_applied = true
 }
 
 inputs = {
