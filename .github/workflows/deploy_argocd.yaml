@@ -40,15 +40,10 @@ jobs:
           echo "Cluster ARN: $CLUSTER_ARN"
           echo "::set-output name=arn::$CLUSTER_ARN"
 
-      - name: Install ArgoCD using Helm
+      - name: Install ArgoCD using official method
         run: |
-          helm repo add argo https://argoproj.github.io/argo-helm
-          helm repo update
-          if helm ls -n argocd | grep -q argocd; then
-            echo "ArgoCD is already installed. Skipping installation."
-          else
-            helm install argocd argo/argo-cd --namespace argocd --create-namespace
-          fi
+          kubectl get namespace argocd || kubectl create namespace argocd
+          kubectl -n argocd apply -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
   
       - name: Wait for ArgoCD to be ready
         run: |
