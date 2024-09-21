@@ -12,12 +12,18 @@ terraform {
 
 dependency "vpc" {
   config_path = "../vpc"
-  skip_outputs = true
+  mock_outputs = {
+    vpc_id = "vpc-0e66df9decdd3d2e5"
+    subnet_ids = ["subnet-0b29a9c0e140021a5", "subnet-0d8a03327f8ab0d24"]
+    vpc_cidr_block = "10.0.0.0/16"
+  }
 }
 
 dependency "bastion" {
   config_path = "../bastion"
-  skip_outputs = true
+mock_outputs = {
+  admin_iam_role = "arn:aws:iam::${get_aws_account_id()}:user/cloud_user"
+  }
 }
 
 inputs = {
