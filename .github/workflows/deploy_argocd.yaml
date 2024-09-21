@@ -1,6 +1,15 @@
 name: Deploy ArgoCD
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: "Choose the environment"
+        required: true
+        default: 'dev'
+        options:
+          - dev
+          - stage
+          - prod
     
 permissions:
   id-token: write
@@ -22,12 +31,12 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Update kubeconfig
-        run: aws eks --region ${{ vars.AWS_REGION }} update-kubeconfig --name dev-eks-cluster
+        run: aws eks --region ${{ vars.AWS_REGION }} update-kubeconfig --name ${{ github.event.inputs.environment }}-eks-cluster
 
       - name: Get EKS Cluster ARN
         id: cluster_arn
         run: |
-          CLUSTER_ARN=$(aws eks describe-cluster --name dev-eks-cluster --region ${{ vars.AWS_REGION }} --query "cluster.arn" --output text)
+          CLUSTER_ARN=$(aws eks describe-cluster --name ${{ github.event.inputs.environment }}-eks-cluster --region ${{ vars.AWS_REGION }} --query "cluster.arn" --output text)
           echo "Cluster ARN: $CLUSTER_ARN"
           echo "::set-output name=arn::$CLUSTER_ARN"
 
@@ -86,12 +95,12 @@ jobs:
       - name: Register EKS Cluster with ArgoCD
         run: |
           if argocd cluster list | grep -q '${{ steps.cluster_arn.outputs.arn }}'; then
-            echo "Cluster dev-cluster is already registered with ArgoCD."
+            echo "Cluster is already registered with ArgoCD."
           else
             argocd cluster add ${{ steps.cluster_arn.outputs.arn }}
           fi
   
-      - name: Create ArgoCD Application (Optional)
+      - name: Create Application 
         env:
           REPOSITORY_TOKEN_ACCESS: ${{ secrets.REPOSITORY_TOKEN_ACCESS }}
         run: |
@@ -100,7 +109,7 @@ jobs:
           else
             argocd app create web \
               --repo ${{ secrets.REPOSITORY_TOKEN_ACCESS }} \
-              --path kubernetes/ \
+              --path kubernetes/application \
               --dest-server https://kubernetes.default.svc \
               --dest-namespace default \
               --sync-policy auto
