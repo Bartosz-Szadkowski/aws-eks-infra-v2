@@ -35,5 +35,5 @@ jobs:
       - name: Terragrunt Apply 
         run: | 
           cd infrastructure/
-          terragrunt run-all apply -auto-approve
+          terragrunt run-all apply -auto-approve --terragrunt-non-interactive
 
