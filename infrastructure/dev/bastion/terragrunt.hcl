@@ -8,11 +8,8 @@ terraform {
 
 dependency "vpc" {
   config_path = "../vpc"
+  skip_outputs = true
 }
-
-// dependencies {
-//   paths = ["../vpc"]
-// }
 
 inputs = {
   vpc_id     = dependency.vpc.outputs.vpc_id
