@@ -1,9 +1,9 @@
-# Create EKS Cluster
+##################
+### EKS CLUSTER
+##################
 resource "aws_eks_cluster" "this" {
   name     = "${var.tags["Environment"]}-eks-cluster"
   role_arn = aws_iam_role.eks_cluster_role.arn
-  bootstrap_self_managed_addons = true
-
   vpc_config {
     subnet_ids              = var.subnet_ids
     endpoint_private_access = var.endpoint_private_access
@@ -13,70 +13,36 @@ resource "aws_eks_cluster" "this" {
   }
 
   version = var.cluster_version
-
   depends_on = [aws_iam_role_policy_attachment.eks_cluster_AmazonEKSClusterPolicy]
-
   access_config {
     authentication_mode = "API_AND_CONFIG_MAP"
   }
-
   tags = {
     Name = "${var.tags["Environment"]}-eks-cluster"
   }
 }
-
-# Retrieve the latest Amazon EKS optimized AMI ID using SSM
-data "aws_ssm_parameter" "eks_ami" {
-  name            = "/aws/service/eks/optimized-ami/${var.cluster_version}/amazon-linux-2/recommended/image_id"
-  with_decryption = false
+data "aws_ssm_parameter" "eks_ami_release_version" {
+  name = "/aws/service/eks/optimized-ami/${aws_eks_cluster.example.version}/amazon-linux-2/recommended/release_version"
 }
 
-# Create an Auto Scaling Group (ASG) for EKS worker nodes using the Launch Template
-resource "aws_autoscaling_group" "eks_nodes" {
-  desired_capacity    = var.desired_capacity
-  max_size            = var.max_size
-  min_size            = var.min_size
-  vpc_zone_identifier = var.subnet_ids
-  launch_template {
-    id      = aws_launch_template.eks_nodes_lt.id
-    version = "$Latest"
-  }
+resource "aws_eks_node_group" "eks_worker_nodes_group" {
+ cluster_name = aws_eks_cluster.this.name 
+ node_group_name = "${var.tags["Environment"]}-eks-worker-nodes" 
+ node_role_arn = aws_iam_role.eks_worker_node_role.arn
+ release_version = nonsensitive(data.aws_ssm_parameter.eks_ami_release_version.value)
+ subnet_ids = var.subnet_ids
+ capacity_type = "ON_DEMAND"
+ instance_types = [ "t2.small" ]
+ scaling_config {
+   desired_size = 2
+   max_size = 2
+   min_size = 0
+ }
+ update_config {
+   max_unavailable = 1
+ }
+ 
 
-  tag {
-    key                 = "kubernetes.io/cluster/${aws_eks_cluster.this.name}"
-    value               = "owned"
-    propagate_at_launch = true
-  }
-}
-
-# Launch Template for Worker Nodes
-resource "aws_launch_template" "eks_nodes_lt" {
-  name_prefix   = "${var.tags["Environment"]}-nodes-"
-  image_id      = data.aws_ssm_parameter.eks_ami.value # Latest EKS Optimized AMI
-  instance_type = var.instance_type
-  key_name      = null
-
-  iam_instance_profile {
-    name = aws_iam_instance_profile.eks_node_profile.name
-  }
-
-  network_interfaces {
-    associate_public_ip_address = false
-    security_groups             = [aws_security_group.worker_sg.id]
-  }
-
-  block_device_mappings {
-    device_name = "/dev/xvda"
-
-    ebs {
-      volume_size = var.ebs_volume_size
-      volume_type = "gp2"
-    }
-  }
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 # Security Group for Worker Nodes
