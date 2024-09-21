@@ -75,3 +75,7 @@ variable "ebs_volume_size" {
 variable "admin_iam_role" {
 
 }
+
+variable "master_admin_iam_arn" {
+  
+}

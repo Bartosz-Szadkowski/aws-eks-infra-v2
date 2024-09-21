@@ -23,6 +23,7 @@ inputs = {
   subnet_ids = dependency.vpc.outputs.private_eks_subnet_ids
   vpc_cidr_block = dependency.vpc.outputs.vpc_cidr_block
   admin_iam_role = dependency.bastion.outputs.instance_role_arn
+  master_admin_iam_arn = "arn:aws:iam::${get_aws_account_id()}:user/cloud_user"
   tags = {
     Terraform   = "true"
     Environment = "dev"
