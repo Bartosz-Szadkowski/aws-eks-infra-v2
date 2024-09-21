@@ -6,13 +6,13 @@ terraform {
   source = "../../../modules/bastion"
 }
 
-// dependency "vpc" {
-//   config_path = "../vpc"
-// }
-
-dependencies {
-  paths = ["../vpc"]
+dependency "vpc" {
+  config_path = "../vpc"
 }
+
+// dependencies {
+//   paths = ["../vpc"]
+// }
 
 inputs = {
   vpc_id     = dependency.vpc.outputs.vpc_id
