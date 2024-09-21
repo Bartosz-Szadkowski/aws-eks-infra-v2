@@ -152,7 +152,7 @@ resource "aws_eks_access_entry" "master_admin_access_entry" {
   type          = "STANDARD"
 }
 
-resource "aws_eks_access_policy_association" "admin_access_policy_association" {
+resource "aws_eks_access_policy_association" "master_admin_access_policy_association" {
   cluster_name  = aws_eks_cluster.this.name
   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
   principal_arn = var.master_admin_iam_arn
