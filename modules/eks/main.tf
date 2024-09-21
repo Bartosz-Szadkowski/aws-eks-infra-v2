@@ -15,8 +15,7 @@ resource "aws_eks_cluster" "this" {
   depends_on = [aws_iam_role_policy_attachment.eks_cluster_AmazonEKSClusterPolicy]
 
   access_config {
-    authentication_mode                         = "API_AND_CONFIG_MAP"
-    bootstrap_cluster_creator_admin_permissions = true
+    authentication_mode = "API_AND_CONFIG_MAP"
   }
 
   tags = {
@@ -132,7 +131,7 @@ resource "aws_vpc_security_group_ingress_rule" "eks_cluster_ingress" {
 resource "aws_eks_access_entry" "admin_access_entry" {
   cluster_name  = aws_eks_cluster.this.name
   principal_arn = var.admin_iam_role
-  type = "STANDARD"
+  type          = "STANDARD"
 }
 
 resource "aws_eks_access_policy_association" "admin_access_policy_association" {

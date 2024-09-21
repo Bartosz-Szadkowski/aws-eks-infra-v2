@@ -73,5 +73,5 @@ variable "ebs_volume_size" {
 }
 
 variable "admin_iam_role" {
-  
+
 }
