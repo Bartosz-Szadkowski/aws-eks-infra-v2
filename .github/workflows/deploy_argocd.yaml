@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
+        type: choice 
         description: "Choose the environment"
         required: true
         default: 'dev'
