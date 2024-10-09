@@ -5,7 +5,6 @@ metadata:
   namespace: argocd
 spec:
   project: default
-
   source:
     repoURL: REPO_URL_PLACEHOLDER
     targetRevision: k8s/deploy-monitoring-with-argocd
@@ -31,14 +30,6 @@ spec:
     repoURL: https://prometheus-community.github.io/helm-charts  
     chart: kube-prometheus-stack                                 
     targetRevision: 51.2.0                                       
-    helm:
-      values: |                                                  
-        prometheus:
-          prometheusSpec:
-            retention: 10d
-        grafana:
-          enabled: true
-          adminPassword: "admin123"                               
   destination:
     server: https://kubernetes.default.svc                       
     namespace: monitoring                                         
