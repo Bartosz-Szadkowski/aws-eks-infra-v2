@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: REPO_URL_PLACEHOLDER
     targetRevision: HEAD
-    path: kubernetes/app_of_apps
+    path: kubernetes/app_of_apps/
   syncPolicy:
     automated:
       prune: true
