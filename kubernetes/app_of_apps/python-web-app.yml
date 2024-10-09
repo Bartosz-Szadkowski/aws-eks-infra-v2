@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata: 
+  name: python-web-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://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@github.com/Bartosz-Szadkowski/aws-eks-infra-v2.git 
+    targetRevision: k8s/deploy-monitoring-with-argocd
+    path: kubernetes/application/
+  destination: 
+    server: https://kubernetes.default.svc
+    namespace: python-web-app
+  syncPolicy:
+    syncOptions: 
+    - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true

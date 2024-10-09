@@ -100,8 +100,8 @@ jobs:
         env:
           REPOSITORY_TOKEN_ACCESS: ${{ secrets.REPOSITORY_TOKEN_ACCESS }}
         run: |
-          sed -i 's|REPO_URL_PLACEHOLDER|${{ secrets.REPOSITORY_TOKEN_ACCESS }}|g' kubernetes/application_argocd.yml
+          sed -i 's|REPO_URL_PLACEHOLDER|${{ secrets.REPOSITORY_TOKEN_ACCESS }}|g' kubernetes/app_of_apps.yml
 
       - name: Apply Argo CD Application manifest
         run: |
-          kubectl apply -f kubernetes/application_argocd.yml
+          kubectl apply -f kubernetes/app_of_apps.yml
