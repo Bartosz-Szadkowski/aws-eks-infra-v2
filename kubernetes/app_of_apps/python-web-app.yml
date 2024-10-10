@@ -14,9 +14,7 @@ spec:
     namespace: python-web-app
   syncPolicy:
     syncOptions: 
-    - CreateNamespace=true
-    - ApplyOutOfSyncOnly=true
-    - ServerSideApply=true
+    - CreateNamespace=true 
     automated:
       prune: true
       selfHeal: true
