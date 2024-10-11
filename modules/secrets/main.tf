@@ -27,8 +27,19 @@ resource "aws_secretsmanager_secret_policy" "argocd_secret_policy" {
         Action   = "secretsmanager:GetSecretValue"
         Resource = aws_secretsmanager_secret.argocd_secret.arn
         Principal = {
-          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/${var.allowed_roles}"  # Replace with your IAM Role ARN
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/${var.allowed_roles}"
         }
+      },
+      {
+        Effect: "Deny",
+        Action: "secretsmanager:GetSecretValue",
+        Resource: aws_secretsmanager_secret.argocd_secret.arn,
+        Condition: {
+          StringNotEquals: {
+            "aws:PrincipalArn": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/${var.allowed_roles}"
+          }
+        },
+        Principal: "*"
       }
     ]
   })
