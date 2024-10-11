@@ -10,7 +10,7 @@ spec:
   project: default
   source:
     repoURL: REPO_URL_PLACEHOLDER
-    targetRevision: k8s/deploy-monitoring-with-argocd
+    targetRevision: HEAD
     path: kubernetes/app_of_apps/
   syncPolicy:
     automated:
