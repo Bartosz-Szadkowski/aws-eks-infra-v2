@@ -114,4 +114,4 @@ jobs:
 
       - name: Change ArgoCD admin password
         run: |
-          argocd account update-password --account admin --current-password ${{ steps.get-password.outputs.result }} --new-password ${{ steps.fetch-secret.outputs.secret_password }}
+          argocd account update-password --account admin --current-password ${{ steps.argocd_password.outputs.password }} --new-password ${{ steps.get-password.outputs.secret_password }}
