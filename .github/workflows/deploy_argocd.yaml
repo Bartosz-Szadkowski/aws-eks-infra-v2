@@ -109,8 +109,8 @@ jobs:
       - name: Fetch ArgoCD password from AWS Secrets Manager
         id: get-password
         run: |
-          secret=$(aws secretsmanager get-secret-value --secret-id argocd-password --query SecretString --output text)
-          echo "::set-output name=secret_password::$(echo $secret | jq -r .)"
+          SECRET=$(aws secretsmanager get-secret-value --secret-id argocd-password --query SecretString --output text --region ${{ vars.AWS_REGION }})
+          echo "::set-output name=secret_password::$SECRET"
 
       - name: Change ArgoCD admin password
         run: |
