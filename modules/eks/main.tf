@@ -66,7 +66,7 @@ resource "aws_eks_node_group" "eks_worker_nodes_group" {
   subnet_ids      = var.subnet_ids
   capacity_type   = "ON_DEMAND"
   instance_types  = [var.instance_type]
-  
+
   scaling_config {
     desired_size = var.desired_capacity
     max_size     = var.max_size

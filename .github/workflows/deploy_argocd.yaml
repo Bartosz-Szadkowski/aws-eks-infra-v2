@@ -105,3 +105,13 @@ jobs:
       - name: Apply Argo CD Application manifest
         run: |
           kubectl apply -f kubernetes/app_of_apps.yml
+
+      - name: Fetch ArgoCD password from AWS Secrets Manager
+        id: get-password
+        run: |
+          SECRET=$(aws secretsmanager get-secret-value --secret-id argocd-password --query SecretString --output text --region ${{ vars.AWS_REGION }})
+          echo "::set-output name=secret_password::$SECRET"
+
+      - name: Change ArgoCD admin password
+        run: |
+          argocd account update-password --account admin --current-password ${{ steps.argocd_password.outputs.password }} --new-password ${{ steps.get-password.outputs.secret_password }}
