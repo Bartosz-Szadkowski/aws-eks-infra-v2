@@ -4,7 +4,7 @@
 
 resource "aws_security_group" "bastion_sg" {
   vpc_id      = var.vpc_id
-  name = "${var.tags["Environment"]}-bastion-sg" 
+  name        = "${var.tags["Environment"]}-bastion-sg"
   description = "Security group for the Bastion Host"
   tags = {
     Service = "${var.tags["Environment"]}-bastion-sg"
@@ -80,12 +80,12 @@ resource "aws_iam_instance_profile" "instance_profile" {
 ##################
 
 resource "aws_instance" "bastion" {
-  for_each      = toset(var.subnet_ids)
-  ami           = data.aws_ami.amazon_linux.id 
-  instance_type = var.instance_type
+  for_each               = toset(var.subnet_ids)
+  ami                    = data.aws_ami.amazon_linux.id
+  instance_type          = var.instance_type
   subnet_id              = each.value # This will loop through each subnet ID
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]
-  iam_instance_profile = aws_iam_instance_profile.instance_profile.name
+  iam_instance_profile   = aws_iam_instance_profile.instance_profile.name
 
   key_name = null # This disables SSH key-pair access
 
