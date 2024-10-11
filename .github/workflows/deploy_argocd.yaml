@@ -1,6 +1,16 @@
 name: Deploy ArgoCD
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        type: choice 
+        description: "Choose the environment"
+        required: true
+        default: 'dev'
+        options:
+          - dev
+          - stage
+          - prod
     
 permissions:
   id-token: write
@@ -22,24 +32,19 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Update kubeconfig
-        run: aws eks --region ${{ vars.AWS_REGION }} update-kubeconfig --name dev-eks-cluster
+        run: aws eks --region ${{ vars.AWS_REGION }} update-kubeconfig --name ${{ github.event.inputs.environment }}-eks-cluster
 
       - name: Get EKS Cluster ARN
         id: cluster_arn
         run: |
-          CLUSTER_ARN=$(aws eks describe-cluster --name dev-eks-cluster --region ${{ vars.AWS_REGION }} --query "cluster.arn" --output text)
+          CLUSTER_ARN=$(aws eks describe-cluster --name ${{ github.event.inputs.environment }}-eks-cluster --region ${{ vars.AWS_REGION }} --query "cluster.arn" --output text)
           echo "Cluster ARN: $CLUSTER_ARN"
           echo "::set-output name=arn::$CLUSTER_ARN"
 
-      - name: Install ArgoCD using Helm
+      - name: Install ArgoCD using official method
         run: |
-          helm repo add argo https://argoproj.github.io/argo-helm
-          helm repo update
-          if helm ls -n argocd | grep -q argocd; then
-            echo "ArgoCD is already installed. Skipping installation."
-          else
-            helm install argocd argo/argo-cd --namespace argocd --create-namespace
-          fi
+          kubectl get namespace argocd || kubectl create namespace argocd
+          kubectl -n argocd apply -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
   
       - name: Wait for ArgoCD to be ready
         run: |
@@ -86,22 +91,17 @@ jobs:
       - name: Register EKS Cluster with ArgoCD
         run: |
           if argocd cluster list | grep -q '${{ steps.cluster_arn.outputs.arn }}'; then
-            echo "Cluster dev-cluster is already registered with ArgoCD."
+            echo "Cluster is already registered with ArgoCD."
           else
             argocd cluster add ${{ steps.cluster_arn.outputs.arn }}
           fi
   
-      - name: Create ArgoCD Application (Optional)
+      - name: Create Application 
         env:
           REPOSITORY_TOKEN_ACCESS: ${{ secrets.REPOSITORY_TOKEN_ACCESS }}
         run: |
-          if argocd app list | grep -q web; then
-            echo "ArgoCD application 'web' already exists."
-          else
-            argocd app create web \
-              --repo ${{ secrets.REPOSITORY_TOKEN_ACCESS }} \
-              --path kubernetes/ \
-              --dest-server https://kubernetes.default.svc \
-              --dest-namespace default \
-              --sync-policy auto
-          fi
+          sed -i 's|REPO_URL_PLACEHOLDER|${{ secrets.REPOSITORY_TOKEN_ACCESS }}|g' kubernetes/app_of_apps.yml
+
+      - name: Apply Argo CD Application manifest
+        run: |
+          kubectl apply -f kubernetes/app_of_apps.yml

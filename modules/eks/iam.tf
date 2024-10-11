@@ -99,3 +99,18 @@ resource "aws_eks_access_policy_association" "master_admin_access_policy_associa
     type = "cluster"
   }
 }
+
+# GitHub Actions workflow access
+resource "aws_eks_access_entry" "github_actions_access_entry" {
+  cluster_name  = aws_eks_cluster.this.name
+  principal_arn = var.github_actions_role
+  type          = "STANDARD"
+}
+resource "aws_eks_access_policy_association" "github_actions_access_policy_association" {
+  cluster_name  = aws_eks_cluster.this.name
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+  principal_arn = var.github_actions_role
+  access_scope {
+    type = "cluster"
+  }
+}

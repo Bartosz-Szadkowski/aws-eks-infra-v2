@@ -66,3 +66,5 @@ variable "tags" {
 variable "admin_iam_role" {}
 
 variable "master_admin_iam_arn" {}
+
+variable "github_actions_role" {}
