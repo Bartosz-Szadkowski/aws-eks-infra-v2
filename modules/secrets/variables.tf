@@ -1,3 +1,3 @@
 variable "allowed_roles" {
-default = "cloud_user"  
+  default = "cloud_user"
 }

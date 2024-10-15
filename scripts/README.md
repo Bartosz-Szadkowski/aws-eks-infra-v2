@@ -3,26 +3,22 @@
 This directory contains helper scripts for automating infrastructure tasks such as setting up Terraform remote state, deploying an OIDC provider, and configuring an IAM role for GitHub Actions using OIDC.
 
 ## Available Scripts
-
+D
 ### 1. **deploy_remote_state.sh**
 
 This script sets up remote state storage for Terraform in AWS using an S3 bucket and DynamoDB for state locking.
 
-#### Usage
-
-`./deploy_remote_state.sh`
-
 #### What It Does:
 
-	•	Creates an S3 bucket for storing Terraform remote state.
-	•	Creates a DynamoDB table for state locking and consistency.
+- Creates an S3 bucket for storing Terraform remote state.
+- Creates a DynamoDB table for state locking and consistency.
 
-Prerequisites:
+#### Prerequisites:
 
-	•	Ensure you have the necessary AWS credentials configured (either via environment variables or AWS CLI profile).
-	•	Terraform installed locally.
+- Ensure you have the necessary AWS credentials configured (either via environment variables or AWS CLI profile).
+- aws cli installed locally.
 
-2. deploy_oidc_provider.sh
+### deploy_oidc_provider.sh
 
 This script deploys an OpenID Connect (OIDC) provider in AWS, which allows secure authentication between GitHub Actions and AWS without needing long-term AWS credentials.
 
