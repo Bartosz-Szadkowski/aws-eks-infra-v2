@@ -27,7 +27,7 @@ resource "aws_secretsmanager_secret_policy" "argocd_secret_policy" {
         Action   = "secretsmanager:GetSecretValue"
         Resource = aws_secretsmanager_secret.argocd_secret.arn
         Principal = {
-          AWS = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/${var.allowed_roles}", "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/GitHubActionsEsta"]
+          AWS = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/${var.allowed_roles}", "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/GitHubActionsRoleEsta"]
         }
       },
       {
@@ -37,7 +37,7 @@ resource "aws_secretsmanager_secret_policy" "argocd_secret_policy" {
         Condition : {
           StringNotEquals : {
             "aws:PrincipalArn" : [
-              "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/${var.allowed_roles}", "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/GitHubActionsEsta"
+              "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/${var.allowed_roles}", "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/GitHubActionsRoleEsta"
             ]
           }
         },
