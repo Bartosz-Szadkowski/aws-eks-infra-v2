@@ -27,6 +27,7 @@ dependency "bastion" {
 }
 
 inputs = {
+  cluster_version        = 1.26
   vpc_id                 = dependency.vpc.outputs.vpc_id
   subnet_ids             = dependency.vpc.outputs.private_eks_subnet_ids
   vpc_cidr_block         = dependency.vpc.outputs.vpc_cidr_block
