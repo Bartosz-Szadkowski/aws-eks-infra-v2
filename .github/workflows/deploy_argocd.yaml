@@ -151,13 +151,6 @@ jobs:
           argocd account update-password \
             --account admin \
             --current-password "${{ steps.argocd_password.outputs.password }}" \
-            --new-password "new-secure-password"
+            --new-password "${{ steps.get_password.outputs.secret_password }}"
 
-      - name: Change ArgoCD Admin Password with AWS Secret Password
-        if: steps.login_attempt.outputs.login_successful == 'false' && steps.get_password.outputs.secret_password
-        run: |
-          echo "Changing password using the password from AWS Secrets Manager."
-          argocd account update-password \
-            --account admin \
-            --current-password "${{ steps.get_password.outputs.secret_password }}" \
-            --new-password "new-secure-password"
+      
