@@ -96,12 +96,12 @@ jobs:
             echo "::set-output name=login_successful::false"
           fi
 
-          - name: Fetch ArgoCD password from AWS Secrets Manager
-          if: steps.login_attempt.outputs.login_successful == 'false'
-          id: get_password
-          run: |
-            SECRET=$(aws secretsmanager get-secret-value --secret-id argocd-password --query SecretString --output text --region ${{ vars.AWS_REGION }})
-            echo "::set-output name=secret_password::$SECRET"
+      - name: Fetch ArgoCD password from AWS Secrets Manager
+        if: steps.login_attempt.outputs.login_successful == 'false'
+        id: get_password
+        run: |
+          SECRET=$(aws secretsmanager get-secret-value --secret-id argocd-password --query SecretString --output text --region ${{ vars.AWS_REGION }})
+          echo "::set-output name=secret_password::$SECRET"
   
       - name: Retry ArgoCD Login with AWS Secret
         if: steps.login_attempt.outputs.login_successful == 'false'
