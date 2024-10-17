@@ -96,6 +96,12 @@ jobs:
             echo "::set-output name=login_successful::false"
           fi
 
+      - name: Fetch ArgoCD password from AWS Secrets Manager
+        id: get_password
+        run: |
+          SECRET=$(aws secretsmanager get-secret-value --secret-id argocd-password --query SecretString --output text --region ${{ vars.AWS_REGION }})
+          echo "::set-output name=secret_password::$SECRET"
+
       - name: Retry ArgoCD Login with AWS Secret
         if: steps.login_attempt.outputs.login_successful == 'false'
         env:
@@ -131,12 +137,6 @@ jobs:
       - name: Apply Argo CD Application manifest
         run: |
           kubectl apply -f kubernetes/app_of_apps.yml
-
-      - name: Fetch ArgoCD password from AWS Secrets Manager
-        id: get_password
-        run: |
-          SECRET=$(aws secretsmanager get-secret-value --secret-id argocd-password --query SecretString --output text --region ${{ vars.AWS_REGION }})
-          echo "::set-output name=secret_password::$SECRET"
 
       - name: Change ArgoCD Admin Password with Initial Password
         if: steps.login_attempt.outputs.login_successful == 'true'
