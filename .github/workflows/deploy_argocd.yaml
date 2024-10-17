@@ -144,13 +144,6 @@ jobs:
             argocd cluster add ${{ steps.cluster_arn.outputs.arn }}
           fi
   
-      # - name: Create Application 
-      #   env:
-      #     REPOSITORY_TOKEN_ACCESS: ${{ secrets.REPOSITORY_TOKEN_ACCESS }}
-      #   run: |
-      #     sed -i 's|REPO_URL_PLACEHOLDER|${{ secrets.REPOSITORY_TOKEN_ACCESS }}|g' kubernetes/app_of_apps.yml
-      #     cat kubernetes/app_of_apps.yml
-
       - name: Apply Argo CD Application manifest
         run: |
           kubectl apply -f kubernetes/app_of_apps.yml

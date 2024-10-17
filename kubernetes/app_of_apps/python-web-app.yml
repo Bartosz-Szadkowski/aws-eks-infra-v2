@@ -7,8 +7,8 @@ spec:
   project: default
   source:
     repoURL: https://github.com/Bartosz-Szadkowski/aws-eks-infra-v2.git 
-    targetRevision: k8s/deploy-monitoring-with-argocd
-    path: kubernetes/application/
+    targetRevision: HEAD
+    path: kubernetes/applications/python_web_app
   destination: 
     server: https://kubernetes.default.svc
     namespace: python-web-app
