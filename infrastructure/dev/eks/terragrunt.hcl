@@ -22,16 +22,26 @@ dependency "bastion" {
   }
 }
 
+dependency "iam" {
+  config_path = "../iam"
+  mock_outputs = {
+    python_web_app_pod_role_arn = "arn:aws:iam::${get_aws_account_id()}:role/python-web-app-pod-role"
+  }
+}
+
 inputs = {
-  cluster_version        = 1.26
-  vpc_id                 = dependency.vpc.outputs.vpc_id
-  subnet_ids             = dependency.vpc.outputs.private_eks_subnet_ids
-  vpc_cidr_block         = dependency.vpc.outputs.vpc_cidr_block
-  admin_iam_role         = dependency.bastion.outputs.instance_role_arn
-  endpoint_public_access = true
-  public_access_cidrs    = ["89.64.78.232/32"]
-  github_actions_role    = "arn:aws:iam::${get_aws_account_id()}:role/GitHubActionsRoleEsta"
-  master_admin_iam_arn   = "arn:aws:iam::${get_aws_account_id()}:user/cloud_user"
+  cluster_version          = 1.26
+  vpc_id                   = dependency.vpc.outputs.vpc_id
+  subnet_ids               = dependency.vpc.outputs.private_eks_subnet_ids
+  vpc_cidr_block           = dependency.vpc.outputs.vpc_cidr_block
+  admin_iam_role           = dependency.bastion.outputs.instance_role_arn
+  python_web_app_namespace = "python-web-app"
+  python_web_app_sa        = "web-sa"
+  python_web_app_role_arn  = dependency.iam.outputs.python_web_app_pod_role_arn
+  endpoint_public_access   = true
+  public_access_cidrs      = ["89.64.78.232/32"]
+  github_actions_role      = "arn:aws:iam::${get_aws_account_id()}:role/GitHubActionsRoleEsta"
+  master_admin_iam_arn     = "arn:aws:iam::${get_aws_account_id()}:user/cloud_user"
   tags = {
     Terraform   = "true"
     Environment = "dev"

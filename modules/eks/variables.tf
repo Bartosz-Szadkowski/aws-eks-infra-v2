@@ -68,3 +68,9 @@ variable "admin_iam_role" {}
 variable "master_admin_iam_arn" {}
 
 variable "github_actions_role" {}
+
+variable "python_web_app_namespace" {}
+
+variable "python_web_app_sa" {}
+
+variable "python_web_app_role_arn" {}
