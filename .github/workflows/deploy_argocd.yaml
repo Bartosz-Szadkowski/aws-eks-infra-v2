@@ -132,7 +132,7 @@ jobs:
           kubectl apply -f kubernetes/app_of_apps.yml
 
       - name: Fetch ArgoCD password from AWS Secrets Manager
-        id: get-password
+        id: get_password
         run: |
           SECRET=$(aws secretsmanager get-secret-value --secret-id argocd-password --query SecretString --output text --region ${{ vars.AWS_REGION }})
           echo "::set-output name=secret_password::$SECRET"
