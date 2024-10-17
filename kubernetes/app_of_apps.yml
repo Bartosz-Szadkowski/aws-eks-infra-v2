@@ -33,7 +33,7 @@ spec:
     metadata:
       name: '{{path}}'
     spec:
-      project: default
+      project: infra
       source:
         repoURL: REPO_URL_PLACEHOLDER
         targetRevision: HEAD
