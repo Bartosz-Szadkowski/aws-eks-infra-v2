@@ -23,7 +23,7 @@ EOF
 }
 
 inputs = {
-  bucket_prefix = "application-bucket-esta-v1"
+  bucket_prefix = "application-bucket-esta-v2"
   tags = {
     Terraform   = "true"
     Environment = "dev"
