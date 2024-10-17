@@ -1,1 +1,1 @@
-variable "s3_bucket_arn" {}
+variable "python_web_app_s3_bucket_arn" {}
