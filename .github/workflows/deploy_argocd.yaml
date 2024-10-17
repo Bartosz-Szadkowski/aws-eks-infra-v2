@@ -41,6 +41,23 @@ jobs:
           echo "Cluster ARN: $CLUSTER_ARN"
           echo "::set-output name=arn::$CLUSTER_ARN"
 
+      - name: Create ArgoCD Repository Credentials Secret
+        run: |
+          cat <<EOF | kubectl apply -f -
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: aws-eks-infra-v2-repo-creds
+            namespace: argocd
+            labels:
+              argocd.argoproj.io/secret-type: repo-creds
+          stringData:
+            type: git
+            url: https://github.com/Bartosz-Szadkowski/aws-eks-infra-v2.git 
+            username: "${{ secrets.REPO_USERNAME }}"
+            password: "${{ secrets.REPO_PASSWORD }}"
+          EOF
+
       - name: Install ArgoCD using official method
         run: |
           kubectl get namespace argocd || kubectl create namespace argocd
@@ -127,12 +144,12 @@ jobs:
             argocd cluster add ${{ steps.cluster_arn.outputs.arn }}
           fi
   
-      - name: Create Application 
-        env:
-          REPOSITORY_TOKEN_ACCESS: ${{ secrets.REPOSITORY_TOKEN_ACCESS }}
-        run: |
-          sed -i 's|REPO_URL_PLACEHOLDER|${{ secrets.REPOSITORY_TOKEN_ACCESS }}|g' kubernetes/app_of_apps.yml
-          cat kubernetes/app_of_apps.yml
+      # - name: Create Application 
+      #   env:
+      #     REPOSITORY_TOKEN_ACCESS: ${{ secrets.REPOSITORY_TOKEN_ACCESS }}
+      #   run: |
+      #     sed -i 's|REPO_URL_PLACEHOLDER|${{ secrets.REPOSITORY_TOKEN_ACCESS }}|g' kubernetes/app_of_apps.yml
+      #     cat kubernetes/app_of_apps.yml
 
       - name: Apply Argo CD Application manifest
         run: |
