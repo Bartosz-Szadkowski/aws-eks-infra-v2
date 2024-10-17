@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://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@github.com/Bartosz-Szadkowski/aws-eks-infra-v2.git 
+    repoURL: https://github.com/Bartosz-Szadkowski/aws-eks-infra-v2.git 
     targetRevision: k8s/deploy-monitoring-with-argocd
     path: kubernetes/application/
   destination: 
