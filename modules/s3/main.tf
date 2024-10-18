@@ -32,8 +32,8 @@ resource "aws_s3_bucket_policy" "application_bucket_policy" {
         Effect = "Allow"
         Action = "s3:*"
         Resource = [
-          "${aws_s3_bucket.application_bucket_versioning.arn}",
-          "${aws_s3_bucket.application_bucket_versioning.arn}/*" # Object level actions
+          "${aws_s3_bucket.application_bucket.arn}",
+          "${aws_s3_bucket.application_bucket.arn}/*" # Object level actions
         ]
         Principal = {
           AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/python-web-app-pod-role"
