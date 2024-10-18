@@ -43,6 +43,7 @@ jobs:
 
       - name: Create ArgoCD Repository Credentials Secret
         run: |
+          kubectl create namespace argocd
           cat <<EOF | kubectl apply -f -
           apiVersion: v1
           kind: Secret
