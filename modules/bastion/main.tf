@@ -180,7 +180,7 @@ resource "aws_instance" "bastion" {
   sudo mv kubectl /usr/local/bin/
 
   # Install ArgoCD CLI
-  curl -sSL -o argocd "https://github.com/argoproj/argo-cd/releases/download/${ARGOCD_VERSION}/argocd-linux-amd64"
+  curl -sSL -o argocd "https://github.com/argoproj/argo-cd/releases/download/$${ARGOCD_VERSION}/argocd-linux-amd64"
   chmod +x argocd
   sudo mv argocd /usr/local/bin/
 
