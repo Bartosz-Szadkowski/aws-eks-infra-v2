@@ -32,7 +32,7 @@ resource "aws_s3_bucket_policy" "application_bucket_policy" {
         Effect = "Allow"
         Action = "s3:*"
         Resource = [
-          "${aws_s3_bucket_application_bucket_versioning.arn}",
+          "${aws_s3_bucket.application_bucket_versioning.arn}",
           "${aws_s3_bucket.application_bucket_versioning.arn}/*" # Object level actions
         ]
         Principal = {
