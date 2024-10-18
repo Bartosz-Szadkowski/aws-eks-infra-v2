@@ -110,7 +110,7 @@ resource "aws_instance" "bastion" {
   key_name = null # This disables SSH key-pair access
 
   user_data_replace_on_change = true
-  user_data = <<-EOF
+  user_data                   = <<-EOF
 
   #!/bin/bash
 
@@ -175,7 +175,7 @@ resource "aws_instance" "bastion" {
   ARGOCD_VERSION="v2.7.4"
 
   # Install kubectl
-  curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+  curl -LO "https://dl.k8s.io/release/$${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
   chmod +x kubectl
   sudo mv kubectl /usr/local/bin/
 
@@ -258,17 +258,17 @@ resource "aws_instance" "bastion" {
   #   # KUBECTL and ARGOCD CLI installtion
   #   KUBECTL_VERSION="v1.28.0"
   #   ARGOCD_VERSION="v2.7.4"
-    
+
   #   # Install kubectl
   #   curl -LO "https://dl.k8s.io/release/$${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
   #   chmod +x kubectl
   #   sudo mv kubectl /usr/local/bin/
-    
+
   #   # Install ArgoCD CLI
   #   curl -sSL -o argocd "https://github.com/argoproj/argo-cd/releases/download/$${ARGOCD_VERSION}/argocd-linux-amd64"
   #   chmod +x argocd
   #   sudo mv argocd /usr/local/bin/
-    
+
   #   # For root user
   #   echo 'export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' >> /root/.zshrc
 
