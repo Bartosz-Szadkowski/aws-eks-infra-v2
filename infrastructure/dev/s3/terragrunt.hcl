@@ -29,6 +29,7 @@ EOF
 }
 
 inputs = {
+  python_web_app_pod_role_arn = dependency.iam.outputs.python_web_app_pod_role_arn
   bucket_prefix = "application-bucket-esta-v6"
   tags = {
     Terraform   = "true"
