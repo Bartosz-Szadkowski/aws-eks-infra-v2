@@ -20,8 +20,6 @@ resource "aws_s3_bucket_versioning" "application_bucket_versioning" {
   }
 }
 
-data "aws_caller_identity" "current" {}
-
 resource "aws_s3_bucket_policy" "application_bucket_policy" {
   bucket = aws_s3_bucket.application_bucket.id
 
