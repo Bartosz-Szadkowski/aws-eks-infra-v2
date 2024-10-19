@@ -36,7 +36,7 @@ resource "aws_s3_bucket_policy" "application_bucket_policy" {
           "${aws_s3_bucket.application_bucket.arn}/*" # Object level actions
         ]
         Principal = {
-          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/python-web-app-pod-role"
+          AWS = "${var.python_web_app_pod_role_arn}"
         }
       }
     ]
