@@ -32,7 +32,7 @@ jobs:
       - name: init_token
         id: init
         run: |
-          git config --global url."https://oauth2:${{ secrets.MODULES_REPO_TOKEN }}@github.com".insteadOf "ssh://git@github.com"
+          git config --global url."https://oauth2:${{ secrets.MODULES_REPO_TOKEN }}@github.com".insteadOf ssh://git@github.com
 
       - name: Install Terragrunt
         run: |
