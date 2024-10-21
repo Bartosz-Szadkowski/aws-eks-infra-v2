@@ -13,15 +13,13 @@ jobs:
     steps:
       - name: Clone repo
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Configure Git to use GITHUB_TOKEN for module access
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # git config --global url."https://Bartosz-Szadkowski:${{ secrets.MODULES_REPO_TOKEN }}@github.com/".insteadOf "https://github.com/"
-          git config --global url."https://oauth2:$GH_TOKEN@github.com/Bartosz-Szadkowski/terraform-modules.git".insteadOf "ssh://git@github.com/Bartosz-Szadkowski/terraform-modules.git"
+      # - name: Configure Git to use GITHUB_TOKEN for module access
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     # git config --global url."https://Bartosz-Szadkowski:${{ secrets.MODULES_REPO_TOKEN }}@github.com/".insteadOf "https://github.com/"
+      #     git config --global url."https://oauth2:$GH_TOKEN@github.com/Bartosz-Szadkowski/terraform-modules.git".insteadOf "ssh://git@github.com/Bartosz-Szadkowski/terraform-modules.git"
 
 
       - name: Configure AWS Credentials
@@ -30,6 +28,11 @@ jobs:
           audience: sts.amazonaws.com
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
           aws-region: ${{ vars.AWS_REGION }}
+
+      - name: init_token
+        id: init
+        run: |
+          git config --global url."https://oauth2:${{ secrets.MODULES_REPO_TOKEN }}@github.com".insteadOf "ssh://git@github.com"
 
       - name: Install Terragrunt
         run: |
