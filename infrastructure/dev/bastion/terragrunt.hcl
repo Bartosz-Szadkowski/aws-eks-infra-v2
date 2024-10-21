@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "../../../modules/bastion"
+  source = "git::git@github.com:Bartosz-Szadkowski/terraform-modules.git//vpc?ref=v1.0.0"
 }
 
 dependency "vpc" {
