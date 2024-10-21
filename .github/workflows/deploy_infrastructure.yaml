@@ -13,11 +13,12 @@ jobs:
     steps:
       - name: Clone repo
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+        # with:
+        #   token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Configure Git to use GITHUB_TOKEN for module access
         run: |
-          git config --global url."https://${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+          git config --global url."https://${{ secrets.MODULES_REPO_TOKEN }}@github.com/".insteadOf "https://github.com/"
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
