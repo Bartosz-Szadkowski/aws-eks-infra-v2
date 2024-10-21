@@ -21,7 +21,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # git config --global url."https://Bartosz-Szadkowski:${{ secrets.MODULES_REPO_TOKEN }}@github.com/".insteadOf "https://github.com/"
-          git config --global url."https://oauth2:$GH_TOKEN@github.com/Bartosz-Szadkowski/terraform-modules.git".insteadOf "https://github.com/Bartosz-Szadkowski/terraform-modules.git"
+          git config --global url."https://oauth2:$GH_TOKEN@github.com/Bartosz-Szadkowski/terraform-modules.git".insteadOf "ssh://git@github.com/Bartosz-Szadkowski/terraform-modules.git"
 
 
       - name: Configure AWS Credentials
