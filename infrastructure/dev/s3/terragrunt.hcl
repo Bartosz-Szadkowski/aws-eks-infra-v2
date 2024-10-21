@@ -6,6 +6,12 @@ terraform {
   source = "../../../modules/s3"
 }
 
+dependency "iam" {
+  config_path = "../iam"
+  mock_outputs = {
+    python_web_app_pod_role_arn = "arn:aws:iam::123456789012:role/MyExampleRole"
+  }
+}
 
 generate "versions" {
   path      = "versions_override.tf"
@@ -23,7 +29,8 @@ EOF
 }
 
 inputs = {
-  bucket_prefix = "application-bucket-esta-v1"
+  python_web_app_pod_role_arn = dependency.iam.outputs.python_web_app_pod_role_arn
+  bucket_prefix = "application-bucket-esta-v6"
   tags = {
     Terraform   = "true"
     Environment = "dev"

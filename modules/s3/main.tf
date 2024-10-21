@@ -20,27 +20,24 @@ resource "aws_s3_bucket_versioning" "application_bucket_versioning" {
   }
 }
 
-# resource "aws_s3_bucket_policy" "allow_access_from_eks" {
-#   bucket = aws_s3_bucket.example.id
-#   policy = data.aws_iam_policy_document.allow_access_from_eks.json
-# }
+resource "aws_s3_bucket_policy" "application_bucket_policy" {
+  bucket = aws_s3_bucket.application_bucket.id
 
-# data "aws_iam_policy_document" "allow_access_from_eks" {
-#   statement {
-#     principals {
-#       type        = "AWS"
-#       identifiers = ["123456789012"]
-#     }
-
-#     actions = [
-#       "s3:GetObject",
-#       "s3:ListBucket",
-#     ]
-
-#     resources = [
-#       aws_s3_bucket.example.arn,
-#       "${aws_s3_bucket.example.arn}/*",
-#     ]
-#   }
-# }
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = "s3:*"
+        Resource = [
+          "${aws_s3_bucket.application_bucket.arn}",
+          "${aws_s3_bucket.application_bucket.arn}/*" # Object level actions
+        ]
+        Principal = {
+          AWS = "${var.python_web_app_pod_role_arn}"
+        }
+      }
+    ]
+  })
+}
 

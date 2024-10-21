@@ -51,7 +51,7 @@ resource "aws_vpc_security_group_ingress_rule" "eks_cluster_ingress" {
 
 resource "aws_eks_addon" "eks_pod_identity_agent" {
   cluster_name = aws_eks_cluster.this.name
-  addon_name = "eks-pod-identity-agent"
+  addon_name   = "eks-pod-identity-agent"
 }
 
 ##################

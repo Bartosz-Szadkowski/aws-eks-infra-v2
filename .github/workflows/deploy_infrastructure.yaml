@@ -30,10 +30,10 @@ jobs:
       - name: Terragrunt Plan 
         run : |
           cd infrastructure/ 
-          terragrunt run-all plan
+          terragrunt run-all plan 
       
       - name: Terragrunt Apply 
         run: | 
           cd infrastructure/
-          terragrunt run-all apply -auto-approve --terragrunt-non-interactive
+          terragrunt run-all apply -auto-approve --terragrunt-non-interactive 
 

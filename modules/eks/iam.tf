@@ -114,3 +114,14 @@ resource "aws_eks_access_policy_association" "github_actions_access_policy_assoc
     type = "cluster"
   }
 }
+
+##################
+### IDENTITY ASSOCIATION FOR WORKLOADS
+##################
+
+resource "aws_eks_pod_identity_association" "python_web_app_pod_identity_association" {
+  cluster_name    = aws_eks_cluster.this.name
+  namespace       = var.python_web_app_namespace
+  service_account = var.python_web_app_sa
+  role_arn        = var.python_web_app_role_arn
+}

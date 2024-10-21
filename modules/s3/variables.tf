@@ -26,3 +26,5 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "python_web_app_pod_role_arn" {}

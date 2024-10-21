@@ -1,7 +1,7 @@
 resource "random_password" "argocd_password" {
-  length  = 16
-  upper   = true
-  lower   = true
+  length = 16
+  upper  = true
+  lower  = true
 }
 
 resource "aws_secretsmanager_secret" "argocd_secret" {
