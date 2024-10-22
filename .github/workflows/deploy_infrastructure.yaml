@@ -29,14 +29,19 @@ jobs:
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Set up GitHub authentication for private modules
-        run: |
-          git config --global url."https://${{ github.token }}:@github.com/".insteadOf "https://github.com/"
+      # - name: Set up GitHub authentication for private modules
+      #   run: |
+      #     git config --global url."https://${{ github.token }}:@github.com/".insteadOf "https://github.com/"
 
       # - name: init_token
       #   id: init
       #   run: |
       #     git config --global url."https://oauth2:${{ secrets.MODULES_REPO_TOKEN }}@github.com".insteadOf ssh://git@github.com
+      
+      - name: Set up Git authentication for private modules
+        run: |
+          git config --global url."https://github.com/".insteadOf git@github.com:
+          git config --global url."https://${{ secrets.GH_ACTION_TOKEN }}:@github.com/".insteadOf "https://github.com/"
 
       - name: Install Terragrunt
         run: |
