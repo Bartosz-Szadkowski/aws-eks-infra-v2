@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "../../../modules/vpc"
+  source = "git::https://github.com/Bartosz-Szadkowski/terraform-modules.git//vpc?ref=v1.0.0"
 }
 
 inputs = {

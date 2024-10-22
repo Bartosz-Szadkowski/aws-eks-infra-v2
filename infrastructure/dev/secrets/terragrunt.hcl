@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "../../../modules/secrets"
+  source = "git::https://github.com/Bartosz-Szadkowski/terraform-modules.git//secrets?ref=v1.0.0"
 }
 
 generate "versions" {

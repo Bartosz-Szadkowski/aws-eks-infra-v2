@@ -14,14 +14,6 @@ jobs:
       - name: Clone repo
         uses: actions/checkout@v3
 
-      # - name: Configure Git to use GITHUB_TOKEN for module access
-      #   env:
-      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   run: |
-      #     # git config --global url."https://Bartosz-Szadkowski:${{ secrets.MODULES_REPO_TOKEN }}@github.com/".insteadOf "https://github.com/"
-      #     git config --global url."https://oauth2:$GH_TOKEN@github.com/Bartosz-Szadkowski/terraform-modules.git".insteadOf "ssh://git@github.com/Bartosz-Szadkowski/terraform-modules.git"
-
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -29,15 +21,6 @@ jobs:
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      # - name: Set up GitHub authentication for private modules
-      #   run: |
-      #     git config --global url."https://${{ github.token }}:@github.com/".insteadOf "https://github.com/"
-
-      # - name: init_token
-      #   id: init
-      #   run: |
-      #     git config --global url."https://oauth2:${{ secrets.MODULES_REPO_TOKEN }}@github.com".insteadOf ssh://git@github.com
-      
       - name: Set up Git authentication for private modules
         run: |
           git config --global url."https://github.com/".insteadOf git@github.com:

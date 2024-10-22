@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "../../../modules/s3"
+  source = "git::https://github.com/Bartosz-Szadkowski/terraform-modules.git//s3?ref=v1.0.0"
 }
 
 dependency "iam" {
