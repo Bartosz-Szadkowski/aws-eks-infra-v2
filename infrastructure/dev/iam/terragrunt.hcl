@@ -3,5 +3,5 @@ include "root" {
 }
 
 terraform {
-  source = "../../../modules/iam"
+  source = "git::https://github.com/Bartosz-Szadkowski/terraform-modules.git//iam?ref=v1.0.0"
 }
