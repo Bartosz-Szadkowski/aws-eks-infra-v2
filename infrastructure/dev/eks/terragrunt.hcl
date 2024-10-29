@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "git::https://github.com/Bartosz-Szadkowski/terraform-modules.git//eks?ref=v1.0.0"
+  source = "git::https://github.com/Bartosz-Szadkowski/terraform-modules.git//eks?ref=eks-v1.1.0"
 }
 
 dependency "vpc" {
@@ -40,10 +40,11 @@ inputs = {
   python_web_app_role_arn  = dependency.iam.outputs.python_web_app_pod_role_arn
   endpoint_public_access   = true
   // public_access_cidrs      = ["89.64.78.232/32"]
-  github_actions_role      = "arn:aws:iam::${get_aws_account_id()}:role/GitHubActionsRoleEsta"
-  master_admin_iam_arn     = "arn:aws:iam::${get_aws_account_id()}:user/cloud_user"
+  github_actions_role  = "arn:aws:iam::${get_aws_account_id()}:role/GitHubActionsRoleEsta"
+  master_admin_iam_arn = "arn:aws:iam::${get_aws_account_id()}:user/cloud_user"
   tags = {
     Terraform   = "true"
     Environment = "dev"
   }
 }
+

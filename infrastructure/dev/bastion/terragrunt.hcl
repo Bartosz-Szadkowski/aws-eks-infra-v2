@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "git::https://github.com/Bartosz-Szadkowski/terraform-modules.git//bastion?ref=v1.0.0"
+  source = "git::https://github.com/Bartosz-Szadkowski/terraform-modules.git//bastion?ref=bastion-v1.1.0"
 }
 
 dependency "vpc" {
@@ -18,3 +18,4 @@ inputs = {
   vpc_id     = dependency.vpc.outputs.vpc_id
   subnet_ids = dependency.vpc.outputs.private_eks_subnet_ids
 }
+

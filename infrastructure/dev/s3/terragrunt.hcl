@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "git::https://github.com/Bartosz-Szadkowski/terraform-modules.git//s3?ref=v1.0.0"
+  source = "git::https://github.com/Bartosz-Szadkowski/terraform-modules.git//s3?ref=s3-v1.1.0"
 }
 
 dependency "iam" {
@@ -30,7 +30,7 @@ EOF
 
 inputs = {
   python_web_app_pod_role_arn = dependency.iam.outputs.python_web_app_pod_role_arn
-  bucket_prefix = "application-bucket-esta-v6"
+  bucket_prefix               = "application-bucket-esta-v6"
   tags = {
     Terraform   = "true"
     Environment = "dev"
