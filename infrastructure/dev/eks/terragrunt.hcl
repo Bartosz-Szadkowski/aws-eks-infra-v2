@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "git::https://github.com/Bartosz-Szadkowski/terraform-modules.git//eks?ref=v1.0.0"
+  source = "git::https://github.com/Bartosz-Szadkowski/terraform-modules.git//eks?ref=eks-v1.1.0"
 }
 
 dependency "vpc" {
