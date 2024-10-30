@@ -31,7 +31,12 @@ spec:
         securityContext:
           seccompProfile:
             type: RuntimeDefault
-          allowPrivilegeEscalation: false    # Prevent privilege escalation
+          allowPrivilegeEscalation: false    
           capabilities:
             drop:
               - ALL     
+        resources:
+          requests:
+            memory: "256Mi"   
+          limits:
+            memory: "512Mi"   
