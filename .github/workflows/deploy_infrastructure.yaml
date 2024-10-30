@@ -14,6 +14,26 @@ jobs:
       - name: Clone repo
         uses: actions/checkout@v3
 
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Terragrunt
+        run: |
+          curl -LO https://github.com/gruntwork-io/terragrunt/releases/download/v0.48.1/terragrunt_linux_amd64
+          sudo mv terragrunt_linux_amd64 /usr/local/bin/terragrunt
+          sudo chmod +x /usr/local/bin/terragrunt
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -diff -recursive .
+
+      - name: Terragrunt Format Check
+        run: terragrunt hclfmt -check -diff -recursive .
+
+      - name: Terragrunt Validate
+        run: terragrunt validate-all
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -25,12 +45,6 @@ jobs:
         run: |
           git config --global url."https://github.com/".insteadOf git@github.com:
           git config --global url."https://${{ secrets.GH_ACTION_TOKEN }}:@github.com/".insteadOf "https://github.com/"
-
-      - name: Install Terragrunt
-        run: |
-          curl -LO https://github.com/gruntwork-io/terragrunt/releases/download/v0.48.1/terragrunt_linux_amd64
-          sudo mv terragrunt_linux_amd64 /usr/local/bin/terragrunt
-          sudo chmod +x /usr/local/bin/terragrunt
 
       - name: Terragrunt Plan 
         run : |

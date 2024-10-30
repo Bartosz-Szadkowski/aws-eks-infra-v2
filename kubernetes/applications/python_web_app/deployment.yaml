@@ -16,9 +16,28 @@ spec:
       serviceAccountName: web-sa
       containers:
       - name: python-web-app
-        image: bszadkowski/python-web-app:latest
+        image: bszadkowski/python-web-app@sha256:0a27241e8feefac78e441a9a3d02d89a40c6a66ca4112bedaaccf209daba4616
         ports:
         - containerPort: 5000
         env:
         - name: APP_MESSAGE
           value: "Hello from the 12-factor Esta Python app running on EKS!"
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 5000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        securityContext:
+          runAsUser: 10001
+          seccompProfile:
+            type: RuntimeDefault
+          allowPrivilegeEscalation: false    
+          capabilities:
+            drop:
+              - ALL     
+        resources:
+          requests:
+            memory: "256Mi"   
+          limits:
+            memory: "512Mi"   
