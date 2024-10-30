@@ -16,7 +16,7 @@ spec:
       serviceAccountName: web-sa
       containers:
       - name: python-web-app
-        image: bszadkowski/python-web-app:latest
+        image: bszadkowski/python-web-app@sha256:0a27241e8feefac78e441a9a3d02d89a40c6a66ca4112bedaaccf209daba4616
         ports:
         - containerPort: 5000
         env:
