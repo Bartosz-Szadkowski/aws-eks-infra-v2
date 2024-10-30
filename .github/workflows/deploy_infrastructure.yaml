@@ -31,6 +31,9 @@ jobs:
       - name: Terragrunt Format Check
         run: terragrunt hclfmt -check -diff -recursive .
 
+      - name: Terragrunt Validate
+        run: terragrunt validate-all
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
