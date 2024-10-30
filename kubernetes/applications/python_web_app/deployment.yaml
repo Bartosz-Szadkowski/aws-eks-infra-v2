@@ -29,6 +29,7 @@ spec:
           initialDelaySeconds: 10
           periodSeconds: 5
         securityContext:
+          runAsUser: 10001
           seccompProfile:
             type: RuntimeDefault
           allowPrivilegeEscalation: false    
