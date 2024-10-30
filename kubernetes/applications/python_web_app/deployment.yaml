@@ -29,6 +29,7 @@ spec:
           initialDelaySeconds: 10
           periodSeconds: 5
         securityContext:
+          readOnlyRootFilesystem: true
           runAsUser: 10001
           seccompProfile:
             type: RuntimeDefault
@@ -36,6 +37,9 @@ spec:
           capabilities:
             drop:
               - ALL     
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-storage
         resources:
           requests:
             memory: "256Mi"   
@@ -43,3 +47,6 @@ spec:
           limits:
             memory: "512Mi"   
             cpu: "500m"
+      volumes:
+      - name: tmp-storage
+        emptyDir: {}
