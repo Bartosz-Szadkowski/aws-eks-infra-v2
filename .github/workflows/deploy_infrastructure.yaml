@@ -31,15 +31,15 @@ jobs:
       - name: Terragrunt Format Check
         run: terragrunt hclfmt -check -diff -recursive .
 
-      - name: Terragrunt Validate
-        run: terragrunt validate-all
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           audience: sts.amazonaws.com
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
           aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Terragrunt Validate
+        run: terragrunt validate-all
 
       - name: Set up Git authentication for private modules
         run: |
