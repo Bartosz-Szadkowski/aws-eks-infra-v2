@@ -37,6 +37,12 @@ spec:
             port: 5000
           initialDelaySeconds: 10
           periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 5000
+          initialDelaySeconds: 30
+          periodSeconds: 10
         securityContext:
           readOnlyRootFilesystem: true
           runAsUser: 10001
