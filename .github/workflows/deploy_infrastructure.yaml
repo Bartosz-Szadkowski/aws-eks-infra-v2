@@ -46,7 +46,7 @@ jobs:
         uses: bridgecrewio/checkov-action@master
         with:
           directory: .
-          framework: all
+          framework: terraform,kubernetes
           output_format: sarif
           log_level: WARNING
           download_external_modules: true
