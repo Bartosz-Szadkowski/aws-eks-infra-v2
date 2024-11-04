@@ -26,12 +26,6 @@ spec:
         env:
         - name: APP_MESSAGE
           value: "Hello from the 12-factor Esta Python app running on EKS!"
-        readinessProbe:
-          httpGet:
-            path: /healthz
-            port: 5000
-          initialDelaySeconds: 5
-          periodSeconds: 10
         livenessProbe:
           httpGet:
             path: /healthz
