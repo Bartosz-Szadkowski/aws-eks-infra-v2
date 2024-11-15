@@ -16,3 +16,9 @@ This project contains the infrastructure and Kubernetes configurations required 
 3. Execute the `deploy_argocd` pipeline to deploy the ArgoCD App of Apps, which will deploy all Kubernetes components defined in the `./kubernetes` directory.
 
 For detailed instructions, refer to the individual `README.md` files in each directory.
+
+# Terraform modules repo
+https://github.com/Bartosz-Szadkowski/terraform-modules
+
+# Application repo
+https://github.com/Bartosz-Szadkowski/12-factor-python-app
